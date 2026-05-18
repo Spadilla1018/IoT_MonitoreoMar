@@ -1,0 +1,313 @@
+/* Estilos del mvo (misión, visión y objetivos) */
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f8ff; /* fondo claro tipo cielo */
+    color: #003366;
+}
+
+header {
+    background-color: rgba(0, 76, 140, 0.9);
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav a {
+    color: white;
+    margin-right: 15px;
+    text-decoration: none;
+}
+
+main {
+    padding: 40px;
+    text-align: center;
+}
+
+h2 {
+    color: #004c8c;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px 0;
+}
+
+/* ============================= */
+/*        BANNER SUPERIOR        */
+/* ============================= */
+
+.banner-mvo {
+    background: linear-gradient(
+        rgba(0, 76, 140, 0.75),
+        rgba(0, 76, 140, 0.75)
+    ),
+    url('oceano1.png') center/cover no-repeat;
+    padding: 60px 20px;
+    text-align: center;
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 40px;
+}
+
+.banner-mvo h1 {
+    font-size: 42px;
+    font-weight: 300;
+    margin-bottom: 10px;
+}
+
+.banner-mvo p {
+    font-size: 18px;
+    opacity: 0.9;
+}
+
+/* ============================= */
+/*        TARJETAS MVO           */
+/* ============================= */
+
+/* Contenedor de tarjetas */
+.cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Tarjetas */
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 76, 140, 0.15);
+    text-align: left;
+    border-left: 6px solid #0078d7;
+}
+
+/* Títulos dentro de tarjetas */
+.card h3 {
+    color: #004c8c;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/* Listas */
+.card ul {
+    padding-left: 20px;
+}
+
+.card li {
+    margin-bottom: 8px;
+    color: #003366;
+}
+
+/* Banner marino superior */
+.banner-interno {
+    background: linear-gradient(
+        rgba(0, 76, 140, 0.75),
+        rgba(0, 76, 140, 0.75)
+    ),
+    url('oceano1.png') center/cover no-repeat;
+    color: white;
+    padding: 40px 30px;
+    text-align: center;
+    border-radius: 0; /* elimina el borde redondeado inferior */
+    box-shadow: none; /* quita la sombra que genera separación */
+    margin-bottom: 0; /* elimina espacio debajo del banner */
+    border-bottom: 4px solid #0078d7; /* línea azul institucional */
+}
+.banner-interno {
+    box-shadow: inset -6px 0 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Contenido dentro del banner */
+.banner-content {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Título principal */
+.banner-content h1 {
+    font-size: 36px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.45); /* sombra suave */
+}
+
+/* Navegación dentro del banner */
+.banner-content nav {
+    margin-top: 10px;
+}
+
+.banner-content nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 0 15px;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.35); /* sombra suave */
+}
+
+.banner-content nav a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================= */
+/*        Style para Dashboard     */
+/* ============================= */
+
+/* Dashboard general */
+.dashboard-container {
+    display: flex;
+    min-height: 80vh;
+    margin-top: 0; /* asegura que el dashboard empiece justo debajo del banner */
+}
+
+/* Panel lateral */
+.sidebar {
+    width: 220px;
+    background: linear-gradient(180deg, #004c8c 0%, #006bb3 100%);
+    color: white;
+    padding: 20px;
+    margin-top: 0; /* elimina separación superior */
+    border-radius: 0; /* quita bordes redondeados para unir con el banner */
+    border-right: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+
+.sidebar h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 15px 0;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar ul li a.active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Sidebar con degradado marino */
+.sidebar {
+    background: linear-gradient(180deg, #004c8c 0%, #006bb3 100%);
+    border-right: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Enlace activo */
+.sidebar ul li a.active {
+    background-color: rgba(255, 255, 255, 0.25);
+    font-weight: 600;
+}
+
+
+/* Contenido principal */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    background-color: #f0f8ff;
+}
+
+/* Grid de tarjetas */
+.grid-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+    margin-top: 25px;
+}
+
+/* Tarjetas */
+.dash-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 76, 140, 0.15);
+    border-left: 6px solid #0078d7;
+}
+
+.dash-card h3 {
+    color: #004c8c;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/* Placeholder para gráficos o Power BI */
+.powerbi-full {
+    width: 100%;
+    margin-bottom: 30px;
+    background: linear-gradient(180deg, #e6f2ff 0%, #ffffff 100%);
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 20px rgba(0, 60, 120, 0.15);
+}
+
+/* Tarjetas debajo del Power BI */
+.grid-dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.dash-card {
+    flex: 1 1 300px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 76, 140, 0.1);
+    padding: 20px;
+    text-align: center;
+}
+
+/* Fondo general del contenido principal */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    background: linear-gradient(to bottom right, #f0f8ff, #e6f3ff);
+}
+
+/* Tarjetas flotantes con efecto hover */
+.dash-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 6px 18px rgba(0, 76, 140, 0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dash-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 76, 140, 0.35);
+}
+
+.powerbi-container {
+    background-color: #f0f8ff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 76, 140, 0.15);
+    padding: 10px;
+    text-align: center;
+}
+

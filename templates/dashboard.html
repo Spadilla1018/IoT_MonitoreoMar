@@ -1,0 +1,57 @@
+{% extends "base_interno.html" %}
+
+{% block title %}Dashboard – SIMMAR‑IoT{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+
+    <!-- Panel lateral -->
+    <aside class="sidebar">
+        <h3>SIMMAR‑IoT</h3>
+        <ul>
+            <li><a href="/dashboard" class="active">📊 Dashboard</a></li>
+            <li><a href="#">🌊 Sensores</a></li>
+            <li><a href="#">📈 Reportes</a></li>
+            <li><a href="#">⚙️ Configuración</a></li>
+            <li><a href="/">🚪 Cerrar sesión</a></li>
+        </ul>
+    </aside>
+
+    <!-- Contenido principal -->
+    <section class="main-content">
+        <h2>Panel de Monitoreo del Nivel del Mar</h2>
+        <p>Visualización de datos IoT y conexión con Power BI.</p>
+
+    <!-- 🔹 Power BI a todo el ancho -->
+    <div class="powerbi-full">
+        <iframe title="Mar"
+            width="100%" height="700"
+            src="https://app.powerbi.com/view?r=eyJrIjoiNjYzMTNjYTktMWU3Ni00YTRiLWEyMzItODI3ZTA1NTk5Y2NhIiwidCI6IjA3ZGE2N2EwLTFmNDMtNGU4Yy05NzdmLTVmODhiNjQ3MGVlNiIsImMiOjR9"
+            frameborder="0" allowFullScreen="true"
+            style="border-radius: 10px; box-shadow: 0 0 15px rgba(0, 76, 140, 0.2);">
+        </iframe>
+    </div>
+
+        <div class="grid-dashboard">
+            <div class="dash-card">
+                <h3>📡 Estado de Sensores</h3>
+                <p>Conectados: 12 / 12 – Última actualización: hace 5 min.</p>
+            </div>
+
+            <div class="dash-card">
+                <h3>🌍 Mapa de Ubicación</h3>
+                <div class="placeholder">Mapa interactivo aquí</div>
+            </div>
+
+            <div class="dash-card">
+                <h3>📊 Power BI</h3>
+
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+{% endblock %}

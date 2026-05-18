@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}SIMMAR-IoT{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_interno.css') }}">
+</head>
+<body>
+
+    <!-- Banner marino superior -->
+    <header class="banner-interno">
+        <div class="banner-content">
+            <h1>Monitoreo del Nivel del Mar con IoT</h1>
+            <nav>
+                <a href="/">Inicio</a>
+                <a href="/mvo">Sobre Nosotros</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>

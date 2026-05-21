@@ -6,9 +6,7 @@ app.secret_key = "clave_super_secreta_simmar_iot"
 
 @app.route("/")
 def index():
-    if "usuario" in session:
-        return redirect(url_for("dashboard"))
-    return render_template("index.html")
+    return render_template("index.html", usuario=session.get("usuario"))
 
 
 @app.route("/mvo")
@@ -21,15 +19,11 @@ def login():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
-
-        # Credenciales de prueba
         if username == "admin" and password == "1234":
             session["usuario"] = username
             return redirect(url_for("dashboard"))
         else:
             return redirect(url_for("index"))
-
-    # GET → redirige al modal del index
     return redirect(url_for("index"))
 
 

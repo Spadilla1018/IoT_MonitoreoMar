@@ -6,6 +6,8 @@ app.secret_key = "clave_super_secreta_simmar_iot"
 
 @app.route("/")
 def index():
+    if "usuario" in session:
+        return redirect(url_for("dashboard"))
     return render_template("index.html")
 
 

@@ -8,7 +8,6 @@ body {
     color: white;
 }
 
-/* Encabezado tipo barra azul translúcida */
 header {
     background-color: rgba(0, 76, 140, 0.85);
     color: white;
@@ -18,7 +17,6 @@ header {
     align-items: center;
 }
 
-/* Enlaces del menú */
 nav a {
     color: white;
     margin-right: 15px;
@@ -30,13 +28,11 @@ nav a:hover {
     text-decoration: underline;
 }
 
-/* Contenido principal */
 main {
     padding: 20px;
     text-align: center;
 }
 
-/* Botones estilo */
 .btn {
     background-color: #0078d7;
     color: white;
@@ -70,7 +66,6 @@ main {
     color: #004c8c;
 }
 
-/* Títulos y párrafos */
 h1, h2 {
     font-weight: 300;
     margin-bottom: 10px;
@@ -82,6 +77,7 @@ p {
     margin: 0 auto 20px auto;
     line-height: 1.6;
 }
+
 section {
     backdrop-filter: blur(3px);
     background-color: rgba(0, 0, 0, 0.4);
@@ -89,33 +85,33 @@ section {
     display: inline-block;
 }
 
-/* Fondo oscuro del modal (Login)*/
+/* Modal */
 .modal {
-    display: none; /* oculto por defecto */
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 20, 40, 0.65); /* azul marino oscuro */
+    background-color: rgba(0, 20, 40, 0.65);
     backdrop-filter: blur(3px);
 }
 
-/* Contenedor del contenido del modal */
 .modal-content {
-    background: rgba(255, 255, 255, 0.15); /* translúcido tipo vidrio */
-    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
     margin: 8% auto;
-    padding: 35px;
-    border-radius: 15px;
+    padding: 40px;
+    border-radius: 18px;
     width: 380px;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 0 0 25px rgba(0, 76, 140, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 76, 140, 0.45);
+    animation: modalFade 0.35s ease-out;
 }
 
-/* Botón de cierre */
 .close {
     color: #ffffff;
     float: right;
@@ -131,14 +127,12 @@ section {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Título del modal */
 .modal-content h2 {
     color: #ffffff;
     margin-bottom: 20px;
     font-weight: 300;
 }
 
-/* Etiquetas */
 .modal-content label {
     display: block;
     text-align: left;
@@ -147,7 +141,6 @@ section {
     margin-bottom: 5px;
 }
 
-/* Campos de texto */
 .modal-content input[type="text"],
 .modal-content input[type="password"] {
     width: 100%;
@@ -157,37 +150,14 @@ section {
     border-radius: 6px;
     background-color: rgba(255, 255, 255, 0.85);
     font-size: 16px;
+    box-sizing: border-box;
 }
 
-/* Botón del modal */
-.modal-content {
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(15px) saturate(180%);
-    -webkit-backdrop-filter: blur(15px) saturate(180%);
-    margin: 8% auto;
-    padding: 40px;
-    border-radius: 18px;
-    width: 380px;
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 0 8px 32px rgba(0, 76, 140, 0.45);
-    animation: modalFade 0.35s ease-out;
-
+.modal-content .btn {
+    width: 100%;
 }
 
-/* Animación de entrada */
 @keyframes modalFade {
-    from {
-        opacity: 0;
-        transform: translateY(-20px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-
-.modal-content .btn:hover {
-    background-color: #005fa3;
+    from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
 }

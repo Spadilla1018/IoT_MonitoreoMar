@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
-app.secret_key = "clave_super_secreta"  # necesaria para usar sesion
+app.secret_key = "clave_super_secreta_simmar_iot"
 
 
 @app.route("/")
@@ -20,16 +20,15 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        # Usuario de prueba (En producción, esto debería ser una consulta a una base de datos)
+        # Credenciales de prueba
         if username == "admin" and password == "1234":
             session["usuario"] = username
             return redirect(url_for("dashboard"))
         else:
-            # Por ahora, si falla, vuelve al inicio
             return redirect(url_for("index"))
-    else:
-        # Si alguien entra por GET a /login, puedes mostrar una página o redirigir
-        return redirect(url_for("index"))  # usamos el modal del index, así que no necesitamos login.html
+
+    # GET → redirige al modal del index
+    return redirect(url_for("index"))
 
 
 @app.route("/dashboard")
@@ -39,7 +38,11 @@ def dashboard():
     return render_template("dashboard.html")
 
 
+@app.route("/logout")
+def logout():
+    session.pop("usuario", None)
+    return redirect(url_for("index"))
+
+
 if __name__ == "__main__":
     app.run(debug=True)
-
-

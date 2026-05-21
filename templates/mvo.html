@@ -4,41 +4,118 @@
 
 {% block content %}
 
-<!-- Contenedor de tarjetas -->
-<div class="cards-container">
+<div class="mvo-wrapper">
 
-    <!-- Misión -->
-    <div class="card">
-        <h3>Misión</h3>
-        <p>
-            Desarrollar una plataforma basada en tecnologías IoT que permita monitorear en tiempo real 
-            el aumento del nivel del mar en ciudades costeras, proporcionando datos confiables para la 
-            toma de decisiones ambientales y la prevención de riesgos.
-        </p>
+    <!-- Banner interno de la sección -->
+    <div class="mvo-banner">
+        <div class="mvo-banner-content">
+            <h1>🌊 Sobre Nosotros</h1>
+            <p>Conoce la misión, visión y objetivos del sistema SIMMAR-IoT</p>
+        </div>
     </div>
 
-    <!-- Visión -->
-    <div class="card">
-        <h3>Visión</h3>
-        <p>
-            Ser una solución tecnológica de referencia en el monitoreo ambiental costero, integrando 
-            sensores IoT, analítica de datos y visualización inteligente para anticipar riesgos asociados 
-            al aumento del nivel del mar y contribuir a la sostenibilidad de las ciudades costeras.
-        </p>
-    </div>
+    <!-- Tarjetas MVO -->
+    <div class="cards-container">
 
-    <!-- Objetivos -->
-    <div class="card">
-        <h3>Objetivos</h3>
-        <ul>
-            <li>Implementar sensores IoT capaces de medir variaciones del nivel del mar en tiempo real.</li>
-            <li>Transmitir los datos a una plataforma centralizada mediante protocolos seguros.</li>
-            <li>Procesar y almacenar la información para análisis histórico y predictivo.</li>
-            <li>Generar visualizaciones que permitan interpretar tendencias y alertas tempranas.</li>
-            <li>Apoyar la toma de decisiones en gestión del riesgo costero.</li>
-        </ul>
-    </div>
+        <!-- Misión -->
+        <div class="card card-mision">
+            <div class="card-icon-header">
+                <div class="card-icon mision-icon">🎯</div>
+                <div>
+                    <h3>Misión</h3>
+                    <span class="card-tag">¿Quiénes somos?</span>
+                </div>
+            </div>
+            <p>
+                Desarrollar una plataforma basada en tecnologías IoT que permita monitorear en tiempo real 
+                el aumento del nivel del mar en ciudades costeras, proporcionando datos confiables para la 
+                toma de decisiones ambientales y la prevención de riesgos.
+            </p>
+        </div>
 
+        <!-- Visión -->
+        <div class="card card-vision">
+            <div class="card-icon-header">
+                <div class="card-icon vision-icon">🔭</div>
+                <div>
+                    <h3>Visión</h3>
+                    <span class="card-tag">¿Hacia dónde vamos?</span>
+                </div>
+            </div>
+            <p>
+                Ser una solución tecnológica de referencia en el monitoreo ambiental costero, integrando 
+                sensores IoT, analítica de datos y visualización inteligente para anticipar riesgos asociados 
+                al aumento del nivel del mar y contribuir a la sostenibilidad de las ciudades costeras.
+            </p>
+        </div>
+
+        <!-- Objetivos -->
+        <div class="card card-objetivos">
+            <div class="card-icon-header">
+                <div class="card-icon objetivos-icon">🏆</div>
+                <div>
+                    <h3>Objetivos</h3>
+                    <span class="card-tag">¿Qué buscamos lograr?</span>
+                </div>
+            </div>
+            <ul class="objetivos-list">
+                <li>
+                    <span class="obj-icon">📡</span>
+                    <span>Implementar sensores IoT capaces de medir variaciones del nivel del mar en tiempo real.</span>
+                </li>
+                <li>
+                    <span class="obj-icon">🔒</span>
+                    <span>Transmitir los datos a una plataforma centralizada mediante protocolos seguros.</span>
+                </li>
+                <li>
+                    <span class="obj-icon">🗄️</span>
+                    <span>Procesar y almacenar la información para análisis histórico y predictivo.</span>
+                </li>
+                <li>
+                    <span class="obj-icon">📊</span>
+                    <span>Generar visualizaciones que permitan interpretar tendencias y alertas tempranas.</span>
+                </li>
+                <li>
+                    <span class="obj-icon">🛡️</span>
+                    <span>Apoyar la toma de decisiones en gestión del riesgo costero.</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Equipo / Valores -->
+        <div class="card card-valores">
+            <div class="card-icon-header">
+                <div class="card-icon valores-icon">💡</div>
+                <div>
+                    <h3>Nuestros Valores</h3>
+                    <span class="card-tag">Lo que nos guía</span>
+                </div>
+            </div>
+            <div class="valores-grid">
+                <div class="valor-item">
+                    <span class="valor-emoji">🔬</span>
+                    <strong>Innovación</strong>
+                    <p>Tecnología de punta aplicada al monitoreo ambiental</p>
+                </div>
+                <div class="valor-item">
+                    <span class="valor-emoji">🤝</span>
+                    <strong>Compromiso</strong>
+                    <p>Datos confiables para decisiones que salvan vidas</p>
+                </div>
+                <div class="valor-item">
+                    <span class="valor-emoji">🌿</span>
+                    <strong>Sostenibilidad</strong>
+                    <p>Protección del ecosistema costero colombiano</p>
+                </div>
+                <div class="valor-item">
+                    <span class="valor-emoji">📈</span>
+                    <strong>Precisión</strong>
+                    <p>Mediciones exactas y análisis riguroso de datos</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
-{% endblock %}
+{% endblock %}s

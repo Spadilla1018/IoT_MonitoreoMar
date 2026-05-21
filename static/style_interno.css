@@ -642,3 +642,194 @@ tbody tr:hover { background: #f0f7ff; }
     background-color: rgba(255, 255, 255, 0.3);
     border-color: white;
 }
+
+/* ============================= */
+/*   PÁGINA SOBRE NOSOTROS (MVO) */
+/* ============================= */
+
+.mvo-wrapper {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 30px 20px 50px;
+}
+
+/* Banner interno de sección */
+.mvo-banner {
+    background: linear-gradient(135deg, #003d7a, #0078d7);
+    border-radius: 14px;
+    padding: 40px 30px;
+    text-align: center;
+    color: white;
+    margin-bottom: 32px;
+    box-shadow: 0 6px 20px rgba(0, 60, 120, 0.25);
+}
+
+.mvo-banner h1 {
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+.mvo-banner p {
+    font-size: 15px;
+    opacity: 0.85;
+    margin: 0;
+    max-width: none;
+}
+
+/* Contenedor de tarjetas */
+.cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Tarjeta base */
+.card {
+    background: white;
+    padding: 24px 28px;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0, 76, 140, 0.1);
+    border-left: 6px solid #0078d7;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(0, 76, 140, 0.18);
+}
+
+/* Colores por tarjeta */
+.card-mision    { border-left-color: #0078d7; }
+.card-vision    { border-left-color: #7c3aed; }
+.card-objetivos { border-left-color: #16a34a; }
+.card-valores   { border-left-color: #f59e0b; }
+
+/* Header con ícono */
+.card-icon-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+.mision-icon    { background: #dbeafe; }
+.vision-icon    { background: #ede9fe; }
+.objetivos-icon { background: #dcfce7; }
+.valores-icon   { background: #fef3c7; }
+
+.card-icon-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #003d7a;
+    margin: 0 0 3px;
+}
+
+.card-tag {
+    font-size: 11px;
+    color: #4a6fa5;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+/* Texto de misión/visión */
+.card p {
+    color: #2d4a6e;
+    font-size: 14px;
+    line-height: 1.75;
+    margin: 0;
+    max-width: none;
+}
+
+/* Lista de objetivos */
+.objetivos-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.objetivos-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #f0f7ff;
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #2d4a6e;
+    line-height: 1.55;
+    border: 1px solid #dbeeff;
+    transition: background 0.2s;
+}
+
+.objetivos-list li:hover {
+    background: #dbeeff;
+}
+
+.obj-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+/* Grid de valores */
+.valores-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 4px;
+}
+
+.valor-item {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.valor-item:hover {
+    transform: translateY(-2px);
+}
+
+.valor-emoji {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.valor-item strong {
+    display: block;
+    font-size: 13px;
+    color: #003d7a;
+    margin-bottom: 4px;
+}
+
+.valor-item p {
+    font-size: 11px;
+    color: #4a6fa5;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .valores-grid { grid-template-columns: 1fr; }
+    .mvo-banner h1 { font-size: 24px; }
+}

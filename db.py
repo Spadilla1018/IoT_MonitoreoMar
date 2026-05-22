@@ -1,4 +1,5 @@
 import pymssql
+import bcrypt
 
 # =========================================
 #   CONFIGURACIÓN SOMEE.COM
@@ -313,33 +314,60 @@ def get_alertas(umbral=120):
 
 
 # =========================================
-#   LOGIN DESDE BD
+#   LOGIN — verifica contraseña cifrada
+#   y también acepta contraseñas en texto
+#   plano (usuarios antiguos)
 # =========================================
 
 def verificar_usuario(email, password):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT ID_Usuario, Nombre, Apellido, Rol
+        SELECT ID_Usuario, Nombre, Apellido, Rol, Password
         FROM Usuarios
-        WHERE Email = %s AND Password = %s AND Activo = 1
-    """, (email, password))
+        WHERE Email = %s AND Activo = 1
+    """, (email,))
     row = cursor.fetchone()
     conn.close()
-    if row:
+
+    if not row:
+        return None
+
+    id_usuario = row[0]
+    nombre     = row[1]
+    apellido   = row[2]
+    rol        = row[3]
+    pwd_stored = row[4]
+
+    # Verificar si la contraseña está cifrada con bcrypt
+    try:
+        pwd_bytes = pwd_stored.encode('utf-8') if isinstance(pwd_stored, str) else pwd_stored
+        es_valida = bcrypt.checkpw(password.encode('utf-8'), pwd_bytes)
+    except Exception:
+        # Si no es bcrypt, comparar como texto plano (usuarios antiguos)
+        es_valida = (password == pwd_stored)
+
+    if es_valida:
         return {
-            "id":       row[0],
-            "nombre":   row[1],
-            "apellido": row[2],
-            "rol":      row[3],
+            "id":       id_usuario,
+            "nombre":   nombre,
+            "apellido": apellido,
+            "rol":      rol,
         }
     return None
 
+
 # =========================================
-#   REGISTRO DE NUEVO USUARIO
+#   REGISTRO — guarda contraseña cifrada
 # =========================================
 
 def registrar_usuario(nombre, apellido, email, password):
+    # Cifrar contraseña con bcrypt
+    password_hash = bcrypt.hashpw(
+        password.encode('utf-8'),
+        bcrypt.gensalt()
+    ).decode('utf-8')
+
     conn = get_connection()
     conn.autocommit(True)
     cursor = conn.cursor()
@@ -347,14 +375,12 @@ def registrar_usuario(nombre, apellido, email, password):
         cursor.execute("""
             INSERT INTO Usuarios (Nombre, Apellido, Email, Password, Rol, Activo)
             VALUES (%s, %s, %s, %s, 'viewer', 1)
-        """, (nombre, apellido, email, password))
-        
-        print(f"DEBUG - Insert ejecutado para {email}")
-        
-        # Verificar que quedó
-        cursor.execute("SELECT ID_Usuario, Nombre FROM Usuarios WHERE Email = %s", (email,))
+        """, (nombre, apellido, email, password_hash))
+
+        cursor.execute(
+            "SELECT ID_Usuario, Nombre FROM Usuarios WHERE Email = %s", (email,)
+        )
         row = cursor.fetchone()
-        print(f"DEBUG - Verificacion: {row}")
         conn.close()
 
         if row:
@@ -363,6 +389,5 @@ def registrar_usuario(nombre, apellido, email, password):
             return {"ok": False, "error": "Insert ejecutado pero no se encontró el registro"}
 
     except Exception as e:
-        print(f"DEBUG - Error registro: {str(e)}")
         conn.close()
         return {"ok": False, "error": str(e)}

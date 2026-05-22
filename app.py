@@ -188,32 +188,37 @@ if __name__ == "__main__":
 
 @app.route("/registro", methods=["POST"])
 def registro():
-    nombre   = request.form.get("nombre")
-    apellido = request.form.get("apellido")
-    email    = request.form.get("email")
-    password = request.form.get("password")
+    nombre    = request.form.get("nombre")
+    apellido  = request.form.get("apellido")
+    email     = request.form.get("email")
+    password  = request.form.get("password")
     confirmar = request.form.get("confirmar")
 
-    # Validaciones básicas
+    print(f"DEBUG REGISTRO - nombre:{nombre} apellido:{apellido} email:{email}")
+
     if not all([nombre, apellido, email, password, confirmar]):
+        print("DEBUG REGISTRO - Faltan campos")
         return render_template("index.html",
                                usuario=None,
                                error_registro="Todos los campos son obligatorios",
                                mostrar_registro=True)
 
     if password != confirmar:
+        print("DEBUG REGISTRO - Contraseñas no coinciden")
         return render_template("index.html",
                                usuario=None,
                                error_registro="Las contraseñas no coinciden",
                                mostrar_registro=True)
 
     if len(password) < 6:
+        print("DEBUG REGISTRO - Contraseña muy corta")
         return render_template("index.html",
                                usuario=None,
                                error_registro="La contraseña debe tener mínimo 6 caracteres",
                                mostrar_registro=True)
 
     resultado = registrar_usuario(nombre, apellido, email, password)
+    print(f"DEBUG REGISTRO - Resultado: {resultado}")
 
     if resultado["ok"]:
         return render_template("index.html",

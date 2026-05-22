@@ -4,55 +4,40 @@
 
 {% block content %}
 
-<!-- ========================
-     HERO SECTION
-     ======================== -->
+<!-- HERO -->
 <section class="hero-section">
     <div class="hero-content">
         <div class="hero-badge">🌊 Sistema SIMMAR-IoT</div>
         <h1 class="hero-title">Monitoreo del Nivel del Mar con IoT</h1>
         <p class="hero-subtitle">Sensores inteligentes para ciudades costeras colombianas</p>
         <p class="hero-desc">
-            Plataforma de monitoreo en tiempo real que integra sensores IoT, analítica de datos 
+            Plataforma de monitoreo en tiempo real que integra sensores IoT, analítica de datos
             y visualización inteligente para anticipar riesgos asociados al aumento del nivel del mar.
         </p>
-        <div class="hero-buttons">
-            {% if usuario %}
-                <a href="/dashboard" class="btn-primary">📊 Ir al Dashboard</a>
-                <a href="/mvo" class="btn-outline-white">Sobre Nosotros</a>
-            {% else %}
-                <a href="#" class="btn-primary" id="openLogin">🔐 Acceder al sistema</a>
-                <a href="/mvo" class="btn-outline-white">Sobre Nosotros</a>
-            {% endif %}
-        </div>
     </div>
 </section>
 
-<!-- ========================
-     QUÉ ES SIMMAR-IoT
-     ======================== -->
+<!-- INFO -->
 <section class="info-section">
-
     <div class="info-header">
         <h2>¿Qué es SIMMAR-IoT?</h2>
         <p>Un sistema tecnológico avanzado para el monitoreo ambiental costero en Colombia</p>
     </div>
-
     <div class="features-grid">
         <div class="feature-card">
             <div class="feature-icon">📡</div>
             <h3>Sensores IoT en tiempo real</h3>
-            <p>Red de 12 sensores distribuidos en las costas colombianas que registran el nivel del mar cada 5 minutos con alta precisión.</p>
+            <p>Red de sensores distribuidos en las costas colombianas que registran el nivel del mar con alta precisión.</p>
         </div>
         <div class="feature-card">
             <div class="feature-icon">📊</div>
             <h3>Análisis de datos avanzado</h3>
-            <p>Procesamiento automático de miles de lecturas diarias con detección de anomalías, tendencias y patrones históricos.</p>
+            <p>Procesamiento automático de miles de lecturas diarias con detección de anomalías y patrones históricos.</p>
         </div>
         <div class="feature-card">
             <div class="feature-icon">🗺️</div>
             <h3>Georreferenciación</h3>
-            <p>Mapa interactivo con la ubicación exacta de cada estación de monitoreo y su nivel de alerta en tiempo real.</p>
+            <p>Mapa interactivo con la ubicación exacta de cada estación de monitoreo y su nivel de alerta.</p>
         </div>
         <div class="feature-card">
             <div class="feature-icon">🔔</div>
@@ -62,20 +47,17 @@
         <div class="feature-card">
             <div class="feature-icon">📈</div>
             <h3>Visualización con Power BI</h3>
-            <p>Dashboard interactivo integrado con Power BI para explorar los datos históricos de 2019 a 2020.</p>
+            <p>Dashboard interactivo integrado con Power BI para explorar los datos históricos.</p>
         </div>
         <div class="feature-card">
             <div class="feature-icon">🛡️</div>
             <h3>Prevención de riesgos</h3>
-            <p>Información estratégica para apoyar la toma de decisiones en gestión del riesgo costero y planificación urbana.</p>
+            <p>Información estratégica para apoyar la toma de decisiones en gestión del riesgo costero.</p>
         </div>
     </div>
-
 </section>
 
-<!-- ========================
-     ESTADÍSTICAS
-     ======================== -->
+<!-- ESTADÍSTICAS -->
 <section class="stats-section">
     <div class="stats-header">
         <h2>El proyecto en números</h2>
@@ -100,9 +82,7 @@
     </div>
 </section>
 
-<!-- ========================
-     ZONAS MONITOREADAS
-     ======================== -->
+<!-- ZONAS -->
 <section class="zonas-section">
     <div class="info-header">
         <h2>Zonas monitoreadas</h2>
@@ -120,68 +100,48 @@
             <div class="zona-icon">🐋</div>
             <h3>Costa Pacífica</h3>
             <p class="zona-nombre">Zona San Juan</p>
-            <p>Presenta niveles más estables y moderados entre 44–68 cm. Mayor volumen de lecturas registradas con comportamiento más predecible.</p>
+            <p>Presenta niveles más estables y moderados. Mayor volumen de lecturas con comportamiento más predecible.</p>
             <div class="zona-tag success">✅ Zona estable</div>
         </div>
     </div>
 </section>
 
-<!-- ========================
-     LLAMADO A LA ACCIÓN
-     ======================== -->
-<section class="cta-section">
-    <h2>¿Listo para explorar los datos?</h2>
-    <p>Accede al dashboard para visualizar el comportamiento del nivel del mar en tiempo real.</p>
-    {% if usuario %}
-        <a href="/dashboard" class="btn-primary">📊 Ir al Dashboard</a>
-    {% else %}
-        <a href="#" class="btn-primary" id="openLogin2">🔐 Iniciar sesión</a>
-    {% endif %}
-</section>
+<!-- LOGIN DIRECTO -->
+<section class="login-directo">
+    <div class="login-box">
+        <h2>🔐 Acceder al sistema</h2>
+        <p>Ingresa tus credenciales para continuar</p>
 
+        {% if error %}
+        <div class="login-error">⚠️ {{ error }}</div>
+        {% endif %}
 
-<!-- ========================
-     Modal de Login
-     ======================== -->
-<div id="loginModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Inicio de sesión</h2>
         <form method="POST" action="/login">
-            <label for="username">Usuario</label>
-            <input type="text" id="username" name="username" placeholder="Ingresa tu email" required>
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
+            <div class="form-group">
+                <label for="username">Correo electrónico</label>
+                <input type="text"
+                       id="username"
+                       name="username"
+                       placeholder="admin@nivelmar.com"
+                       required>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       placeholder="••••••••"
+                       required>
+            </div>
             <button type="submit" class="btn">Iniciar sesión</button>
         </form>
+
+        <div style="margin-top:14px; text-align:center;">
+            <a href="/mvo" style="color:#7dd3fc; font-size:13px; text-decoration:none;">
+                Sobre Nosotros
+            </a>
+        </div>
     </div>
-</div>
-
-<script>
-    const modal    = document.getElementById("loginModal");
-    const closeBtn = document.getElementsByClassName("close")[0];
-
-    function openModal(e) {
-        e.preventDefault();
-        modal.style.display = "block";
-    }
-
-    const btn1 = document.getElementById("openLogin");
-    const btn2 = document.getElementById("openLogin2");
-    if (btn1) btn1.addEventListener("click", openModal);
-    if (btn2) btn2.addEventListener("click", openModal);
-
-    closeBtn.onclick = function() { modal.style.display = "none"; }
-
-    window.onclick = function(e) {
-        if (e.target === modal) modal.style.display = "none";
-    }
-
-    document.addEventListener("keydown", function(e) {
-        if (e.key === "Escape") modal.style.display = "none";
-    });
-
-    /* NO interceptar el submit del formulario */
-</script>
+</section>
 
 {% endblock %}

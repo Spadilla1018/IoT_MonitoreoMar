@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<!-- HERO -->
+<!-- HERO + LOGIN -->
 <section class="hero-section">
     <div class="hero-content">
         <div class="hero-badge">🌊 Sistema SIMMAR-IoT</div>
@@ -18,8 +18,6 @@
 
     <!-- PANEL LOGIN / REGISTRO -->
     <div class="login-box">
-
-        <!-- Tabs -->
         <div class="auth-tabs">
             <button class="auth-tab {% if not mostrar_registro %}active{% endif %}"
                     onclick="switchTab('login')">
@@ -31,7 +29,7 @@
             </button>
         </div>
 
-        <!-- ===== FORMULARIO LOGIN ===== -->
+        <!-- LOGIN -->
         <div id="form-login" {% if mostrar_registro %}style="display:none;"{% endif %}>
 
             {% if error %}
@@ -63,7 +61,7 @@
             </div>
         </div>
 
-        <!-- ===== FORMULARIO REGISTRO ===== -->
+        <!-- REGISTRO -->
         <div id="form-registro" {% if not mostrar_registro %}style="display:none;"{% endif %}>
 
             {% if error_registro %}
@@ -99,7 +97,6 @@
                 <button type="submit" class="btn">Crear cuenta</button>
             </form>
         </div>
-
     </div>
 </section>
 
@@ -133,7 +130,7 @@
         <div class="feature-card">
             <div class="feature-icon">📈</div>
             <h3>Visualización con Power BI</h3>
-            <p>Dashboard interactivo integrado con Power BI para explorar los datos históricos.</p>
+            <p>Dashboard integrado con Power BI para explorar los datos históricos.</p>
         </div>
         <div class="feature-card">
             <div class="feature-icon">🛡️</div>
@@ -211,43 +208,5 @@ function switchTab(tab) {
     }
 }
 </script>
-
-<!-- LOGIN DIRECTO -->
-<section class="login-directo">
-    <div class="login-box">
-        <h2>🔐 Acceder al sistema</h2>
-        <p>Ingresa tus credenciales para continuar</p>
-
-        {% if error %}
-        <div class="login-error">⚠️ {{ error }}</div>
-        {% endif %}
-
-        <form method="POST" action="/login">
-            <div class="form-group">
-                <label for="username">Correo electrónico</label>
-                <input type="text"
-                       id="username"
-                       name="username"
-                       placeholder="admin@nivelmar.com"
-                       required>
-            </div>
-            <div class="form-group">
-                <label for="password">Contraseña</label>
-                <input type="password"
-                       id="password"
-                       name="password"
-                       placeholder="••••••••"
-                       required>
-            </div>
-            <button type="submit" class="btn">Iniciar sesión</button>
-        </form>
-
-        <div style="margin-top:14px; text-align:center;">
-            <a href="/mvo" style="color:#7dd3fc; font-size:13px; text-decoration:none;">
-                Sobre Nosotros
-            </a>
-        </div>
-    </div>
-</section>
 
 {% endblock %}

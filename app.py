@@ -1,44 +1,176 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from db import (
+    get_kpis,
+    get_serie_temporal,
+    get_comparativo_anual,
+    get_zonas,
+    get_estaciones,
+    get_promedios_temporales,
+    get_alertas,
+    verificar_usuario,
+)
 
 app = Flask(__name__)
 app.secret_key = "clave_super_secreta_simmar_iot"
 
+
+# =========================================
+#   PÁGINA PRINCIPAL
+# =========================================
 
 @app.route("/")
 def index():
     return render_template("index.html", usuario=session.get("usuario"))
 
 
+# =========================================
+#   SOBRE NOSOTROS
+# =========================================
+
 @app.route("/mvo")
 def mvo():
     return render_template("mvo.html")
 
 
+# =========================================
+#   LOGIN
+# =========================================
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("username")
+        email    = request.form.get("username")
         password = request.form.get("password")
-        if username == "admin" and password == "1234":
-            session["usuario"] = username
-            return redirect(url_for("dashboard"))
-        else:
-            return redirect(url_for("index"))
+
+        try:
+            usuario = verificar_usuario(email, password)
+            if usuario:
+                session["usuario"]  = usuario["nombre"] + " " + usuario["apellido"]
+                session["rol"]      = usuario["rol"]
+                session["id"]       = usuario["id"]
+                return redirect(url_for("dashboard"))
+            else:
+                return render_template("index.html",
+                                       usuario=None,
+                                       error="Credenciales incorrectas")
+        except Exception as e:
+            return render_template("index.html",
+                                   usuario=None,
+                                   error=f"Error de conexión: {str(e)}")
+
     return redirect(url_for("index"))
 
+
+# =========================================
+#   DASHBOARD
+# =========================================
 
 @app.route("/dashboard")
 def dashboard():
     if "usuario" not in session:
         return redirect(url_for("index"))
-    return render_template("dashboard.html")
 
+    try:
+        kpis       = get_kpis()
+        estaciones = get_estaciones()
+        zonas      = get_zonas()
+    except Exception as e:
+        kpis       = {
+            "total_lecturas":   0,
+            "nivel_promedio":   0,
+            "nivel_max":        0,
+            "estacion_max":     "-",
+            "fecha_max":        "-",
+            "sensores_activos": 0,
+        }
+        estaciones = []
+        zonas      = []
+
+    return render_template("dashboard.html",
+                           kpis=kpis,
+                           estaciones=estaciones,
+                           zonas=zonas,
+                           usuario=session.get("usuario"),
+                           rol=session.get("rol"))
+
+
+# =========================================
+#   APIs JSON PARA GRÁFICOS
+# =========================================
+
+@app.route("/api/serie-temporal")
+def api_serie_temporal():
+    if "usuario" not in session:
+        return jsonify({"error": "No autorizado"}), 401
+    try:
+        return jsonify(get_serie_temporal())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/comparativo-anual")
+def api_comparativo_anual():
+    if "usuario" not in session:
+        return jsonify({"error": "No autorizado"}), 401
+    try:
+        return jsonify(get_comparativo_anual())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/zonas")
+def api_zonas():
+    if "usuario" not in session:
+        return jsonify({"error": "No autorizado"}), 401
+    try:
+        return jsonify(get_zonas())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/promedios-temporales")
+def api_promedios_temporales():
+    if "usuario" not in session:
+        return jsonify({"error": "No autorizado"}), 401
+    try:
+        return jsonify(get_promedios_temporales())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/alertas")
+def api_alertas():
+    if "usuario" not in session:
+        return jsonify({"error": "No autorizado"}), 401
+    try:
+        return jsonify(get_alertas())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/estaciones")
+def api_estaciones():
+    if "usuario" not in session:
+        return jsonify({"error": "No autorizado"}), 401
+    try:
+        return jsonify(get_estaciones())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# =========================================
+#   LOGOUT
+# =========================================
 
 @app.route("/logout")
 def logout():
-    session.pop("usuario", None)
+    session.clear()
     return redirect(url_for("index"))
 
+
+# =========================================
+#   MAIN
+# =========================================
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -42,21 +42,27 @@ def login():
         email    = request.form.get("username")
         password = request.form.get("password")
 
+        print(f"DEBUG - Email: {email}, Password: {password}")
+
         try:
             usuario = verificar_usuario(email, password)
+            print(f"DEBUG - Usuario encontrado: {usuario}")
+
             if usuario:
                 session["usuario"]  = usuario["nombre"] + " " + usuario["apellido"]
                 session["rol"]      = usuario["rol"]
                 session["id"]       = usuario["id"]
                 return redirect(url_for("dashboard"))
             else:
+                print("DEBUG - Credenciales incorrectas")
                 return render_template("index.html",
                                        usuario=None,
                                        error="Credenciales incorrectas")
         except Exception as e:
+            print(f"DEBUG - Error: {str(e)}")
             return render_template("index.html",
                                    usuario=None,
-                                   error=f"Error de conexión: {str(e)}")
+                                   error=f"Error: {str(e)}")
 
     return redirect(url_for("index"))
 

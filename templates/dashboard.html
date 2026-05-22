@@ -4,7 +4,6 @@
 
 {% block content %}
 
-<!-- Chart.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 
 <div class="dashboard-container">
@@ -33,19 +32,18 @@
         </ul>
 
         <div class="sidebar-footer">
-            <span style="color:#22c55e;">●</span> Sistema activo · v2.1
+            <span style="color:#22c55e;">●</span> {{ usuario }} · {{ rol }}
         </div>
     </aside>
 
     <!-- ===================== MAIN ===================== -->
     <section class="main-content">
 
-        <!-- Topbar -->
         <div class="topbar-info">
             <span id="breadcrumb" style="font-weight:600; color:#003d7a;">📊 Dashboard · Resumen ejecutivo</span>
             <div class="status-pill">
                 <span class="status-dot"></span>
-                12/12 sensores activos · Actualizado hace 5 min · 2019–2020
+                {{ kpis.sensores_activos }} sensores activos · BD conectada
             </div>
         </div>
 
@@ -57,62 +55,56 @@
 
             <div class="page-header">
                 <h2>Panel de Monitoreo del Nivel del Mar</h2>
-                <p>Storytelling analítico · Datos IoT · Colombia 2019–2020</p>
+                <p>Datos reales · BD NivelMar_DW · Colombia</p>
             </div>
 
-            <!-- KPIs -->
+            <!-- KPIs desde BD -->
             <div class="kpi-grid">
                 <div class="kpi-card success">
                     <div class="kpi-label">📡 Sensores activos</div>
-                    <div class="kpi-value">12/12</div>
-                    <div class="kpi-delta up">▲ 100% conectados</div>
+                    <div class="kpi-value">{{ kpis.sensores_activos }}</div>
+                    <div class="kpi-delta up">▲ Estaciones monitoreando</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-label">🌊 Nivel promedio</div>
-                    <div class="kpi-value">63 cm</div>
-                    <div class="kpi-delta down">▼ −4 cm vs semana ant.</div>
+                    <div class="kpi-value">{{ kpis.nivel_promedio }} cm</div>
+                    <div class="kpi-delta neutral">Promedio histórico</div>
                 </div>
                 <div class="kpi-card danger">
                     <div class="kpi-label">⚠️ Pico máx. registrado</div>
-                    <div class="kpi-value">172 cm</div>
-                    <div class="kpi-delta neutral">Est. 14017001 · ene 2020</div>
+                    <div class="kpi-value">{{ kpis.nivel_max }} cm</div>
+                    <div class="kpi-delta neutral">Est. {{ kpis.estacion_max }} · {{ kpis.fecha_max }}</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-label">🗄️ Lecturas totales</div>
-                    <div class="kpi-value">28.4k</div>
-                    <div class="kpi-delta up">▲ +1.2k este mes</div>
+                    <div class="kpi-value">{{ "{:,}".format(kpis.total_lecturas) }}</div>
+                    <div class="kpi-delta up">▲ Registros en BD</div>
                 </div>
             </div>
 
             <!-- Storytelling -->
             <div class="story-card">
                 <h4>💡 Narrativa analítica — ¿Qué nos dicen los datos?</h4>
-                <p>En <strong>enero de 2020</strong> la estación <strong>14017001</strong> (Bajo Magdalena, costa Caribe) registró un pico anómalo de <strong>172 cm</strong>, casi 3 veces el nivel habitual de 52–65 cm. La estación <strong>54077210</strong> (San Juan, costa Pacífico) mantiene patrones más estables. Ambas zonas muestran un descenso sostenido hacia mediados de 2020, sugiriendo recuperación post-evento.</p>
+                <p>El sistema registra <strong>{{ "{:,}".format(kpis.total_lecturas) }} lecturas</strong> provenientes de <strong>{{ kpis.sensores_activos }} estaciones</strong> activas. El nivel promedio histórico es de <strong>{{ kpis.nivel_promedio }} cm</strong> con un pico máximo de <strong>{{ kpis.nivel_max }} cm</strong> registrado en la estación <strong>{{ kpis.estacion_max }}</strong> el {{ kpis.fecha_max }}.</p>
             </div>
 
             <!-- Charts fila 1 -->
             <div class="charts-row cols-2">
                 <div class="dash-card">
                     <h3>📈 Evolución temporal del nivel</h3>
-                    <p class="card-sub">Valor observado mensual por estación · 2019–2020</p>
+                    <p class="card-sub">Valor observado mensual por estación</p>
                     <div style="position:relative; height:220px;">
-                        <canvas id="c-temporal" role="img" aria-label="Línea temporal del nivel del mar 2019-2020">Niveles mensuales 2019-2020 por estación.</canvas>
+                        <canvas id="c-temporal" role="img" aria-label="Línea temporal del nivel del mar">Cargando datos...</canvas>
                     </div>
-                    <div class="chart-legend">
-                        <span><span class="legend-dot" style="background:#1d6fb8;"></span>Estación 14017001</span>
-                        <span><span class="legend-dot" style="background:#38bdf8;"></span>Estación 54077210</span>
-                    </div>
+                    <div class="chart-legend" id="legend-temporal"></div>
                 </div>
                 <div class="dash-card">
                     <h3>📊 Comparativo anual por estación</h3>
-                    <p class="card-sub">Total acumulado 2019 vs 2020</p>
+                    <p class="card-sub">Total acumulado por año</p>
                     <div style="position:relative; height:220px;">
-                        <canvas id="c-anual" role="img" aria-label="Barras comparativas anuales">Comparación 2019 vs 2020 por estación.</canvas>
+                        <canvas id="c-anual" role="img" aria-label="Barras comparativas anuales">Cargando datos...</canvas>
                     </div>
-                    <div class="chart-legend">
-                        <span><span class="legend-dot" style="background:#1d6fb8;"></span>Est. 14017001</span>
-                        <span><span class="legend-dot" style="background:#38bdf8;"></span>Est. 54077210</span>
-                    </div>
+                    <div class="chart-legend" id="legend-anual"></div>
                 </div>
             </div>
 
@@ -122,18 +114,15 @@
                     <h3>🍩 Distribución por zona hidrográfica</h3>
                     <p class="card-sub">Proporción de lecturas registradas</p>
                     <div style="position:relative; height:200px;">
-                        <canvas id="c-zonas-donut" role="img" aria-label="Donut de zonas hidrográficas">San Juan y Bajo Magdalena.</canvas>
+                        <canvas id="c-zonas-donut" role="img" aria-label="Donut de zonas hidrográficas">Cargando datos...</canvas>
                     </div>
-                    <div class="chart-legend">
-                        <span><span class="legend-dot" style="background:#1d6fb8;"></span>San Juan 55%</span>
-                        <span><span class="legend-dot" style="background:#dc2626;"></span>Bajo Magdalena 45%</span>
-                    </div>
+                    <div class="chart-legend" id="legend-zonas"></div>
                 </div>
                 <div class="dash-card">
                     <h3>📉 Tendencia — Media móvil 3 meses</h3>
-                    <p class="card-sub">Suavizado del pico anómalo ene 2020</p>
+                    <p class="card-sub">Suavizado de la serie temporal</p>
                     <div style="position:relative; height:200px;">
-                        <canvas id="c-media" role="img" aria-label="Media móvil del nivel del mar">Tendencia suavizada por media móvil.</canvas>
+                        <canvas id="c-media" role="img" aria-label="Media móvil del nivel del mar">Cargando datos...</canvas>
                     </div>
                 </div>
             </div>
@@ -148,111 +137,95 @@
 
             <div class="page-header">
                 <h2>📡 Dimensión: Sensores IoT</h2>
-                <p>Estado, rendimiento y comparativo de dispositivos · ¿Qué sensores generan mayores valores?</p>
+                <p>Estado y comparativo de estaciones · Datos reales desde BD</p>
             </div>
 
             <div class="kpi-grid">
                 <div class="kpi-card success">
-                    <div class="kpi-label">Conectados</div>
-                    <div class="kpi-value">12</div>
-                    <div class="kpi-delta up">▲ 100% disponibles</div>
-                </div>
-                <div class="kpi-card success">
-                    <div class="kpi-label">Desconectados</div>
-                    <div class="kpi-value">0</div>
-                    <div class="kpi-delta up">Sin fallas activas</div>
+                    <div class="kpi-label">Estaciones</div>
+                    <div class="kpi-value">{{ kpis.sensores_activos }}</div>
+                    <div class="kpi-delta up">▲ Activas</div>
                 </div>
                 <div class="kpi-card danger">
                     <div class="kpi-label">Mayor valor histórico</div>
-                    <div class="kpi-value">172 cm</div>
-                    <div class="kpi-delta neutral">Sensor 14017001</div>
+                    <div class="kpi-value">{{ kpis.nivel_max }} cm</div>
+                    <div class="kpi-delta neutral">Est. {{ kpis.estacion_max }}</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-label">Frecuencia muestreo</div>
-                    <div class="kpi-value">5 min</div>
-                    <div class="kpi-delta neutral">Intervalo estándar</div>
+                    <div class="kpi-label">Nivel promedio</div>
+                    <div class="kpi-value">{{ kpis.nivel_promedio }} cm</div>
+                    <div class="kpi-delta neutral">Histórico global</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Total lecturas</div>
+                    <div class="kpi-value">{{ "{:,}".format(kpis.total_lecturas) }}</div>
+                    <div class="kpi-delta up">▲ Registros en BD</div>
                 </div>
             </div>
 
             <!-- Filtros -->
             <div class="filter-bar">
-                <label>🔧 Estado:</label>
-                <select onchange="filterTable('sensor-table', this.value, 'data-estado')">
-                    <option value="all">Todos</option>
-                    <option value="activo">Activos</option>
-                    <option value="alerta">En alerta</option>
-                </select>
-                <label>Zona:</label>
+                <label>🔧 Zona:</label>
                 <select onchange="filterTable('sensor-table', this.value, 'data-zona')">
                     <option value="all">Todas</option>
-                    <option value="bajo-magdalena">Bajo Magdalena</option>
-                    <option value="san-juan">San Juan</option>
+                    {% set zonas_unicas = [] %}
+                    {% for e in estaciones %}
+                        {% if e.zona not in zonas_unicas %}
+                            {% set _ = zonas_unicas.append(e.zona) %}
+                            <option value="{{ e.zona }}">{{ e.zona }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <label>Departamento:</label>
+                <select onchange="filterTable('sensor-table', this.value, 'data-depto')">
+                    <option value="all">Todos</option>
+                    {% set deptos_unicos = [] %}
+                    {% for e in estaciones %}
+                        {% if e.departamento not in deptos_unicos %}
+                            {% set _ = deptos_unicos.append(e.departamento) %}
+                            <option value="{{ e.departamento }}">{{ e.departamento }}</option>
+                        {% endif %}
+                    {% endfor %}
                 </select>
             </div>
 
             <div class="dash-card" style="margin-bottom:18px;">
-                <h3>📋 Tabla de sensores</h3>
+                <h3>📋 Tabla de estaciones</h3>
                 <div class="table-wrap">
                     <table>
                         <thead>
                             <tr>
-                                <th>Código sensor</th>
+                                <th>Código</th>
+                                <th>Nombre estación</th>
                                 <th>Zona hidrográfica</th>
-                                <th>Nivel actual (cm)</th>
-                                <th>Valor máx. histórico</th>
-                                <th>Estado</th>
-                                <th>Tendencia</th>
+                                <th>Departamento</th>
+                                <th>Municipio</th>
+                                <th>Promedio (cm)</th>
+                                <th>Máx. (cm)</th>
+                                <th>Lecturas</th>
                             </tr>
                         </thead>
                         <tbody id="sensor-table">
-                            <tr data-estado="alerta" data-zona="bajo-magdalena">
-                                <td><strong>14017001</strong></td>
-                                <td>Bajo Magdalena</td>
-                                <td>89</td>
-                                <td>172</td>
-                                <td><span class="badge yellow">⚠️ Alerta</span></td>
-                                <td style="color:#dc2626;">▲ Sube</td>
+                            {% for e in estaciones %}
+                            <tr data-zona="{{ e.zona }}" data-depto="{{ e.departamento }}">
+                                <td><strong>{{ e.codigo }}</strong></td>
+                                <td>{{ e.nombre }}</td>
+                                <td>{{ e.zona }}</td>
+                                <td>{{ e.departamento }}</td>
+                                <td>{{ e.municipio }}</td>
+                                <td>{{ e.promedio }}</td>
+                                <td>
+                                    {% if e.max_valor > 120 %}
+                                        <span style="color:#dc2626; font-weight:600;">{{ e.max_valor }}</span>
+                                    {% elif e.max_valor > 80 %}
+                                        <span style="color:#f59e0b; font-weight:600;">{{ e.max_valor }}</span>
+                                    {% else %}
+                                        <span style="color:#16a34a; font-weight:600;">{{ e.max_valor }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ "{:,}".format(e.lecturas) }}</td>
                             </tr>
-                            <tr data-estado="activo" data-zona="san-juan">
-                                <td><strong>54077210</strong></td>
-                                <td>San Juan</td>
-                                <td>52</td>
-                                <td>68</td>
-                                <td><span class="badge green">✅ Activo</span></td>
-                                <td style="color:#16a34a;">▼ Baja</td>
-                            </tr>
-                            <tr data-estado="activo" data-zona="bajo-magdalena">
-                                <td><strong>14017002</strong></td>
-                                <td>Bajo Magdalena</td>
-                                <td>61</td>
-                                <td>95</td>
-                                <td><span class="badge green">✅ Activo</span></td>
-                                <td style="color:#4a6fa5;">— Estable</td>
-                            </tr>
-                            <tr data-estado="activo" data-zona="san-juan">
-                                <td><strong>54077211</strong></td>
-                                <td>San Juan</td>
-                                <td>48</td>
-                                <td>71</td>
-                                <td><span class="badge green">✅ Activo</span></td>
-                                <td style="color:#16a34a;">▼ Baja</td>
-                            </tr>
-                            <tr data-estado="activo" data-zona="bajo-magdalena">
-                                <td><strong>14017003</strong></td>
-                                <td>Bajo Magdalena</td>
-                                <td>77</td>
-                                <td>88</td>
-                                <td><span class="badge green">✅ Activo</span></td>
-                                <td style="color:#dc2626;">▲ Sube</td>
-                            </tr>
-                            <tr data-estado="activo" data-zona="san-juan">
-                                <td><strong>54077212</strong></td>
-                                <td>San Juan</td>
-                                <td>44</td>
-                                <td>60</td>
-                                <td><span class="badge green">✅ Activo</span></td>
-                                <td style="color:#4a6fa5;">— Estable</td>
-                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -260,22 +233,17 @@
 
             <div class="charts-row cols-2">
                 <div class="dash-card">
-                    <h3>📊 Suma de valores por sensor</h3>
-                    <p class="card-sub">¿Qué dispositivo acumula más lecturas?</p>
+                    <h3>📊 Valor máximo por estación</h3>
+                    <p class="card-sub">¿Qué estación registra mayores niveles?</p>
                     <div style="position:relative; height:240px;">
-                        <canvas id="c-sensores-bar" role="img" aria-label="Barras horizontales de valores por sensor">Suma total por sensor.</canvas>
+                        <canvas id="c-sensores-bar" role="img" aria-label="Barras de valores por estación">Cargando...</canvas>
                     </div>
                 </div>
                 <div class="dash-card">
-                    <h3>🍕 Distribución de lecturas por sensor</h3>
+                    <h3>🍕 Lecturas por estación</h3>
                     <p class="card-sub">Proporción de registros por dispositivo</p>
                     <div style="position:relative; height:240px;">
-                        <canvas id="c-sensores-pie" role="img" aria-label="Pie chart de lecturas por sensor">Proporción de lecturas por sensor.</canvas>
-                    </div>
-                    <div class="chart-legend">
-                        <span><span class="legend-dot" style="background:#1d6fb8;"></span>14017001 30%</span>
-                        <span><span class="legend-dot" style="background:#38bdf8;"></span>54077210 21%</span>
-                        <span><span class="legend-dot" style="background:#7dd3fc;"></span>Otros 49%</span>
+                        <canvas id="c-sensores-pie" role="img" aria-label="Pie de lecturas por estación">Cargando...</canvas>
                     </div>
                 </div>
             </div>
@@ -290,62 +258,40 @@
 
             <div class="page-header">
                 <h2>📈 Análisis Temporal</h2>
-                <p>Patrones históricos, tendencias y comportamiento estacional · 2019–2020</p>
-            </div>
-
-            <div class="filter-bar">
-                <label>📅 Período:</label>
-                <select id="sel-periodo">
-                    <option value="all">2019–2020 completo</option>
-                    <option value="2019">Solo 2019</option>
-                    <option value="2020">Solo 2020</option>
-                </select>
-                <label>Estación:</label>
-                <select id="sel-estacion">
-                    <option value="all">Ambas estaciones</option>
-                    <option value="1">14017001 (Bajo Magdalena)</option>
-                    <option value="2">54077210 (San Juan)</option>
-                </select>
+                <p>Patrones históricos y tendencias · Datos reales desde BD</p>
             </div>
 
             <div class="story-card">
                 <h4>🕐 Patrón temporal identificado</h4>
-                <p>El <strong>primer semestre de 2019</strong> muestra niveles estables (40–65 cm). El <strong>evento anómalo de enero 2020</strong> en la estación 14017001 es estadísticamente atípico (+170% sobre el promedio). Después del pico, ambas estaciones muestran tendencia descendente hasta julio 2020, lo que podría corresponder a un ciclo estacional combinado con fenómenos climáticos regionales.</p>
+                <p>Análisis de la evolución del nivel del mar basado en <strong>{{ "{:,}".format(kpis.total_lecturas) }} registros reales</strong>. Se identifican patrones estacionales, tendencias de largo plazo y eventos anómalos que superan el umbral crítico de 120 cm.</p>
             </div>
 
             <div class="dash-card" style="margin-bottom:18px;">
-                <h3>📈 Serie temporal completa con anotación del pico anómalo</h3>
-                <p class="card-sub">Enero 2020: pico máximo de 172 cm en est. 14017001</p>
+                <h3>📈 Serie temporal completa</h3>
+                <p class="card-sub">Nivel mensual por estación · Datos reales BD</p>
                 <div style="position:relative; height:270px;">
-                    <canvas id="c-serie-full" role="img" aria-label="Serie temporal completa 2019-2020">Serie con pico marcado en enero 2020.</canvas>
+                    <canvas id="c-serie-full" role="img" aria-label="Serie temporal completa">Cargando datos...</canvas>
                 </div>
-                <div class="chart-legend">
-                    <span><span class="legend-dot" style="background:#1d6fb8;"></span>Est. 14017001</span>
-                    <span><span class="legend-dot" style="background:#38bdf8;"></span>Est. 54077210</span>
-                    <span><span class="legend-dot" style="background:#dc2626; border-radius:50%;"></span>Pico anómalo</span>
-                </div>
+                <div class="chart-legend" id="legend-serie"></div>
             </div>
 
             <div class="charts-row cols-3">
                 <div class="dash-card">
                     <h3>📊 Promedio por semestre</h3>
-                    <p class="card-sub">Nivel medio cada 6 meses</p>
                     <div style="position:relative; height:170px;">
-                        <canvas id="c-semestre" role="img" aria-label="Promedio semestral">Promedio por semestre.</canvas>
+                        <canvas id="c-semestre" role="img" aria-label="Promedio semestral">Cargando...</canvas>
                     </div>
                 </div>
                 <div class="dash-card">
                     <h3>📉 Variabilidad mensual</h3>
-                    <p class="card-sub">Desviación estándar por mes</p>
                     <div style="position:relative; height:170px;">
-                        <canvas id="c-variab" role="img" aria-label="Variabilidad mensual">Desviación estándar mensual.</canvas>
+                        <canvas id="c-variab" role="img" aria-label="Variabilidad mensual">Cargando...</canvas>
                     </div>
                 </div>
                 <div class="dash-card">
-                    <h3>📊 2019 vs 2020 mensual</h3>
-                    <p class="card-sub">Comparativo mes a mes</p>
+                    <h3>📊 Promedio por mes</h3>
                     <div style="position:relative; height:170px;">
-                        <canvas id="c-comp-anios" role="img" aria-label="Comparativo anual mensual">Comparativo 2019 vs 2020.</canvas>
+                        <canvas id="c-prom-mes" role="img" aria-label="Promedio mensual">Cargando...</canvas>
                     </div>
                 </div>
             </div>
@@ -360,132 +306,97 @@
 
             <div class="page-header">
                 <h2>🗺️ Mapa de Georreferenciación</h2>
-                <p>Ubicación y nivel de riesgo de estaciones en el territorio colombiano · ¿Dónde ocurren más eventos?</p>
+                <p>Ubicación de estaciones · Datos reales desde BD</p>
             </div>
 
             <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
                 <div class="kpi-card danger">
                     <div class="kpi-label">Zona de mayor riesgo</div>
-                    <div class="kpi-value" style="font-size:17px;">Bajo Magdalena</div>
-                    <div class="kpi-delta down">Pico 172 cm registrado</div>
+                    <div class="kpi-value" style="font-size:15px;">
+                        {% if zonas %}{{ zonas[0].zona }}{% else %}Sin datos{% endif %}
+                    </div>
+                    <div class="kpi-delta down">
+                        Máx: {% if zonas %}{{ zonas[0].maximo }} cm{% endif %}
+                    </div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-label">Cobertura geográfica</div>
-                    <div class="kpi-value">2 zonas</div>
-                    <div class="kpi-delta neutral">San Juan + Bajo Magdalena</div>
+                    <div class="kpi-label">Zonas monitoreadas</div>
+                    <div class="kpi-value">{{ zonas|length }}</div>
+                    <div class="kpi-delta neutral">Zonas hidrográficas</div>
                 </div>
-                <div class="kpi-card warning">
-                    <div class="kpi-label">Alertas activas en mapa</div>
-                    <div class="kpi-value">1</div>
-                    <div class="kpi-delta down">Est. 14017001 · nivel alto</div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Estaciones totales</div>
+                    <div class="kpi-value">{{ kpis.sensores_activos }}</div>
+                    <div class="kpi-delta up">▲ Activas</div>
                 </div>
             </div>
 
             <div class="story-card">
                 <h4>📍 ¿Dónde ocurren más eventos extremos?</h4>
-                <p>La zona del <strong>Bajo Magdalena</strong> (costa Caribe colombiana, área Barranquilla–Cartagena) concentra el 100% de los eventos de nivel extremo. La zona del <strong>San Juan</strong> (costa Pacífica) registra niveles más moderados. Esta diferencia podría estar relacionada con los efectos del Río Magdalena y la dinámica oceánica del Caribe colombiano.</p>
+                <p>
+                    {% if zonas %}
+                        La zona <strong>{{ zonas[0].zona }}</strong> concentra los niveles más altos con un máximo de <strong>{{ zonas[0].maximo }} cm</strong> y un promedio de <strong>{{ zonas[0].promedio }} cm</strong>.
+                        {% if zonas|length > 1 %}
+                        La zona <strong>{{ zonas[1].zona }}</strong> presenta niveles más moderados con promedio de <strong>{{ zonas[1].promedio }} cm</strong>.
+                        {% endif %}
+                    {% endif %}
+                </p>
             </div>
 
-            <div class="dash-card" style="margin-bottom:18px; position:relative;">
-                <h3>🗺️ Mapa interactivo de estaciones — Colombia</h3>
-                <p class="card-sub">Pasa el cursor sobre las estaciones para ver detalles · color indica nivel de alerta</p>
+            <div class="dash-card" style="margin-bottom:18px;">
+                <h3>🗺️ Mapa de estaciones — Colombia</h3>
+                <p class="card-sub">Pasa el cursor sobre las estaciones para ver detalles</p>
                 <div class="map-container" style="height:320px;">
                     <svg id="col-map" viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Fondo mar -->
                         <rect width="600" height="320" fill="#b8dff5"/>
-                        <!-- Territorio Colombia aproximado -->
                         <ellipse cx="290" cy="145" rx="115" ry="105" fill="#a8d08d"/>
                         <ellipse cx="310" cy="220" rx="80"  ry="65"  fill="#90c470"/>
                         <ellipse cx="200" cy="160" rx="55"  ry="75"  fill="#9fd49a"/>
                         <ellipse cx="375" cy="120" rx="45"  ry="55"  fill="#7bc474"/>
                         <ellipse cx="250" cy="110" rx="65"  ry="40"  fill="#88c057"/>
-                        <!-- Label país -->
                         <text x="265" y="158" font-size="12" fill="#2d5a27" font-family="sans-serif" font-weight="600">COLOMBIA</text>
-                        <!-- Labels costas -->
                         <text x="85"  y="165" font-size="9" fill="#1a4a8a" font-family="sans-serif">Océano Pacífico</text>
                         <text x="400" y="100" font-size="9" fill="#1a4a8a" font-family="sans-serif">Mar Caribe</text>
-                        <!-- Líneas costeras -->
-                        <line x1="178" y1="85"  x2="178" y2="240" stroke="#5a9e50" stroke-width="0.5" stroke-dasharray="4"/>
-                        <line x1="370" y1="65"  x2="370" y2="185" stroke="#5a9e50" stroke-width="0.5" stroke-dasharray="4"/>
-
-                        <!-- Estación 14017001 - Bajo Magdalena (Caribe) - ROJA alta -->
-                        <circle class="map-station" cx="310" cy="88" r="9"
-                            fill="#dc2626" stroke="white" stroke-width="2"
-                            data-name="14017001"
-                            data-zona="Bajo Magdalena"
-                            data-nivel="89 cm"
-                            data-alerta="ALTA"
-                            data-max="172 cm"/>
-                        <text x="322" y="84" font-size="8" fill="#7f1d1d" font-family="sans-serif" font-weight="600">14017001 ▲</text>
-
-                        <!-- Estación 14017002 - Bajo Magdalena - NARANJA -->
-                        <circle class="map-station" cx="340" cy="108" r="6"
-                            fill="#ea580c" stroke="white" stroke-width="1.5"
-                            data-name="14017002"
-                            data-zona="Bajo Magdalena"
-                            data-nivel="61 cm"
-                            data-alerta="MEDIA"
-                            data-max="95 cm"/>
-
-                        <!-- Estación 14017003 - Bajo Magdalena - NARANJA -->
-                        <circle class="map-station" cx="295" cy="105" r="6"
-                            fill="#ea580c" stroke="white" stroke-width="1.5"
-                            data-name="14017003"
-                            data-zona="Bajo Magdalena"
-                            data-nivel="77 cm"
-                            data-alerta="MEDIA"
-                            data-max="88 cm"/>
-
-                        <!-- Estación 54077210 - San Juan (Pacífico) - VERDE normal -->
-                        <circle class="map-station" cx="200" cy="190" r="9"
-                            fill="#16a34a" stroke="white" stroke-width="2"
-                            data-name="54077210"
-                            data-zona="San Juan"
-                            data-nivel="52 cm"
-                            data-alerta="NORMAL"
-                            data-max="68 cm"/>
-                        <text x="212" y="195" font-size="8" fill="#14532d" font-family="sans-serif">54077210</text>
-
-                        <!-- Estación 54077211 - San Juan - VERDE -->
-                        <circle class="map-station" cx="185" cy="215" r="6"
-                            fill="#16a34a" stroke="white" stroke-width="1.5"
-                            data-name="54077211"
-                            data-zona="San Juan"
-                            data-nivel="48 cm"
-                            data-alerta="NORMAL"
-                            data-max="71 cm"/>
-
+                        <!-- Estaciones dinámicas desde BD -->
+                        {% for e in estaciones %}
+                            {% if e.max_valor > 120 %}
+                                {% set color = "#dc2626" %}
+                            {% elif e.max_valor > 80 %}
+                                {% set color = "#ea580c" %}
+                            {% else %}
+                                {% set color = "#16a34a" %}
+                            {% endif %}
+                            {% if e.latitud and e.longitud %}
+                                {# Convertir lat/lon a coordenadas SVG #}
+                                {% set svgx = ((e.longitud + 82) / 20 * 220 + 130)|int %}
+                                {% set svgy = ((14 - e.latitud) / 20 * 220 + 40)|int %}
+                                <circle class="map-station"
+                                    cx="{{ svgx }}" cy="{{ svgy }}" r="8"
+                                    fill="{{ color }}" stroke="white" stroke-width="2"
+                                    data-name="{{ e.codigo }}"
+                                    data-zona="{{ e.zona }}"
+                                    data-nivel="{{ e.promedio }} cm"
+                                    data-alerta="{% if e.max_valor > 120 %}ALTA{% elif e.max_valor > 80 %}MEDIA{% else %}NORMAL{% endif %}"
+                                    data-max="{{ e.max_valor }} cm"/>
+                            {% endif %}
+                        {% endfor %}
                         <!-- Leyenda -->
                         <rect x="10" y="255" width="148" height="58" rx="5" fill="rgba(255,255,255,0.92)"/>
                         <circle cx="28" cy="269" r="6" fill="#dc2626"/>
-                        <text x="40" y="273" font-size="8" fill="#333" font-family="sans-serif">Nivel alto (&gt;80 cm)</text>
+                        <text x="40" y="273" font-size="8" fill="#333" font-family="sans-serif">Nivel alto (&gt;120 cm)</text>
                         <circle cx="28" cy="284" r="6" fill="#ea580c"/>
-                        <text x="40" y="288" font-size="8" fill="#333" font-family="sans-serif">Nivel medio (50–80 cm)</text>
+                        <text x="40" y="288" font-size="8" fill="#333" font-family="sans-serif">Nivel medio (80–120 cm)</text>
                         <circle cx="28" cy="300" r="6" fill="#16a34a"/>
-                        <text x="40" y="304" font-size="8" fill="#333" font-family="sans-serif">Nivel normal (&lt;50 cm)</text>
+                        <text x="40" y="304" font-size="8" fill="#333" font-family="sans-serif">Nivel normal (&lt;80 cm)</text>
                     </svg>
                     <div class="map-tooltip" id="map-tooltip"></div>
                 </div>
             </div>
 
-            <div class="charts-row cols-2">
-                <div class="dash-card">
-                    <h3>📊 Nivel actual vs máximo por estación</h3>
-                    <p class="card-sub">Comparativo de valores actuales e históricos</p>
-                    <div style="position:relative; height:200px;">
-                        <canvas id="c-geo-bar" role="img" aria-label="Nivel por estación vs máximo">Nivel actual vs histórico.</canvas>
-                    </div>
-                </div>
-                <div class="dash-card">
-                    <h3>🗺️ Comparativo por costa</h3>
-                    <p class="card-sub">Costa Caribe vs Costa Pacífica · 2019–2020</p>
-                    <div style="position:relative; height:200px;">
-                        <canvas id="c-costa" role="img" aria-label="Comparativo por costa">Valores por tipo de costa.</canvas>
-                    </div>
-                    <div class="chart-legend">
-                        <span><span class="legend-dot" style="background:#1d6fb8;"></span>2019</span>
-                        <span><span class="legend-dot" style="background:#38bdf8;"></span>2020</span>
-                    </div>
+            <div class="dash-card">
+                <h3>📊 Nivel promedio vs máximo por estación</h3>
+                <div style="position:relative; height:200px;">
+                    <canvas id="c-geo-bar" role="img" aria-label="Nivel por estación">Cargando...</canvas>
                 </div>
             </div>
 
@@ -499,57 +410,88 @@
 
             <div class="page-header">
                 <h2>🌊 Dimensión: Zonas Hidrográficas</h2>
-                <p>Comparativo entre cuencas y comportamiento diferenciado · ¿Qué zonas requieren atención?</p>
+                <p>Comparativo entre cuencas · Datos reales desde BD</p>
             </div>
 
-            <div class="kpi-grid" style="grid-template-columns:repeat(2,1fr);">
-                <div class="kpi-card">
-                    <div class="kpi-label">🌊 San Juan (Pacífico)</div>
-                    <div class="kpi-value">~21k lecturas</div>
-                    <div class="kpi-delta neutral">55% del total registrado</div>
+            <!-- KPIs dinámicos por zona -->
+            <div class="kpi-grid" style="grid-template-columns: repeat({{ zonas|length }}, 1fr);">
+                {% for z in zonas %}
+                <div class="kpi-card {% if loop.index == 1 %}danger{% endif %}">
+                    <div class="kpi-label">{{ z.zona }}</div>
+                    <div class="kpi-value">{{ "{:,}".format(z.lecturas) }}</div>
+                    <div class="kpi-delta neutral">Promedio: {{ z.promedio }} cm · Máx: {{ z.maximo }} cm</div>
                 </div>
-                <div class="kpi-card danger">
-                    <div class="kpi-label">⚠️ Bajo Magdalena (Caribe)</div>
-                    <div class="kpi-value">~17k lecturas</div>
-                    <div class="kpi-delta down">Zona de mayor riesgo histórico</div>
-                </div>
+                {% endfor %}
             </div>
 
             <div class="story-card">
                 <h4>🚨 ¿Qué zonas requieren atención prioritaria?</h4>
-                <p>El <strong>Bajo Magdalena</strong> requiere atención prioritaria: concentra el 100% de los eventos extremos y el pico histórico de 172 cm. La zona del <strong>San Juan</strong> presenta mayor volumen de lecturas acumuladas pero niveles más moderados, lo que indica mayor estabilidad hidrodinámica en la costa Pacífica. Se recomienda reforzar el monitoreo en el Bajo Magdalena durante el período noviembre–febrero.</p>
+                <p>
+                    {% if zonas %}
+                        <strong>{{ zonas[0].zona }}</strong> lidera con el mayor valor máximo registrado de <strong>{{ zonas[0].maximo }} cm</strong> y un promedio de <strong>{{ zonas[0].promedio }} cm</strong> en <strong>{{ "{:,}".format(zonas[0].lecturas) }} lecturas</strong>.
+                        {% if zonas|length > 1 %}
+                        En contraste, <strong>{{ zonas[1].zona }}</strong> muestra niveles más moderados con máximo de <strong>{{ zonas[1].maximo }} cm</strong>.
+                        {% endif %}
+                    {% endif %}
+                </p>
             </div>
 
             <div class="charts-row cols-2">
                 <div class="dash-card">
                     <h3>📊 Suma de valores por zona</h3>
-                    <p class="card-sub">Total acumulado por cuenca hidrográfica</p>
                     <div style="position:relative; height:230px;">
-                        <canvas id="c-zonas-bar" role="img" aria-label="Barras por zona hidrográfica">San Juan vs Bajo Magdalena.</canvas>
+                        <canvas id="c-zonas-bar" role="img" aria-label="Barras por zona">Cargando...</canvas>
                     </div>
                 </div>
                 <div class="dash-card">
-                    <h3>📈 Evolución por zona · 2019–2020</h3>
-                    <p class="card-sub">Tendencia temporal diferenciada por cuenca</p>
+                    <h3>📈 Promedio vs Máximo por zona</h3>
                     <div style="position:relative; height:230px;">
-                        <canvas id="c-zonas-line" role="img" aria-label="Líneas por zona">Tendencia temporal por zona.</canvas>
-                    </div>
-                    <div class="chart-legend">
-                        <span><span class="legend-dot" style="background:#1d6fb8;"></span>San Juan</span>
-                        <span><span class="legend-dot" style="background:#dc2626;"></span>Bajo Magdalena</span>
+                        <canvas id="c-zonas-maxprom" role="img" aria-label="Promedio vs máximo por zona">Cargando...</canvas>
                     </div>
                 </div>
             </div>
 
-            <div class="dash-card">
-                <h3>📊 Comparativo anual por zona · 2019 vs 2020</h3>
-                <p class="card-sub">Variación interanual por cuenca hidrográfica</p>
-                <div style="position:relative; height:170px;">
-                    <canvas id="c-zonas-anual" role="img" aria-label="Comparativo anual por zona">Comparativo 2019 vs 2020 por zona.</canvas>
-                </div>
-                <div class="chart-legend" style="margin-top:10px;">
-                    <span><span class="legend-dot" style="background:#1d6fb8;"></span>San Juan</span>
-                    <span><span class="legend-dot" style="background:#dc2626;"></span>Bajo Magdalena</span>
+            <div class="dash-card" style="margin-top:16px;">
+                <h3>📋 Resumen por zona hidrográfica</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Zona hidrográfica</th>
+                                <th>Total lecturas</th>
+                                <th>Valor total</th>
+                                <th>Promedio (cm)</th>
+                                <th>Máximo (cm)</th>
+                                <th>Nivel de riesgo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for z in zonas %}
+                            <tr>
+                                <td><strong>{{ z.zona }}</strong></td>
+                                <td>{{ "{:,}".format(z.lecturas) }}</td>
+                                <td>{{ "{:,.2f}".format(z.total) }}</td>
+                                <td>{{ z.promedio }}</td>
+                                <td>
+                                    {% if z.maximo > 120 %}
+                                        <span style="color:#dc2626; font-weight:600;">{{ z.maximo }}</span>
+                                    {% else %}
+                                        <span style="color:#16a34a; font-weight:600;">{{ z.maximo }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if z.maximo > 120 %}
+                                        <span class="badge red">🔴 Alto</span>
+                                    {% elif z.maximo > 80 %}
+                                        <span class="badge yellow">⚠️ Medio</span>
+                                    {% else %}
+                                        <span class="badge green">✅ Normal</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -563,114 +505,54 @@
 
             <div class="page-header">
                 <h2>🔔 Sistema de Alertas</h2>
-                <p>Eventos anómalos, umbrales críticos y estaciones en observación</p>
+                <p>Eventos que superan el umbral crítico · Datos reales desde BD</p>
             </div>
 
             <div class="kpi-grid">
                 <div class="kpi-card danger">
-                    <div class="kpi-label">Alertas activas</div>
-                    <div class="kpi-value" style="color:#dc2626;">1</div>
-                    <div class="kpi-delta down">Est. 14017001</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Eventos históricos</div>
-                    <div class="kpi-value">3</div>
-                    <div class="kpi-delta neutral">Picos 2019–2020</div>
-                </div>
-                <div class="kpi-card warning">
-                    <div class="kpi-label">Umbral crítico IDEAM</div>
+                    <div class="kpi-label">Umbral crítico</div>
                     <div class="kpi-value">120 cm</div>
                     <div class="kpi-delta neutral">Nivel de alerta roja</div>
                 </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Pico máximo global</div>
+                    <div class="kpi-value">{{ kpis.nivel_max }} cm</div>
+                    <div class="kpi-delta down">Est. {{ kpis.estacion_max }}</div>
+                </div>
+                <div class="kpi-card warning">
+                    <div class="kpi-label">Umbral precaución</div>
+                    <div class="kpi-value">80 cm</div>
+                    <div class="kpi-delta neutral">Nivel de alerta amarilla</div>
+                </div>
                 <div class="kpi-card success">
-                    <div class="kpi-label">Días sin evento crítico</div>
-                    <div class="kpi-value">142</div>
-                    <div class="kpi-delta up">▲ Desde último pico</div>
+                    <div class="kpi-label">Nivel promedio</div>
+                    <div class="kpi-value">{{ kpis.nivel_promedio }} cm</div>
+                    <div class="kpi-delta up">▲ Dentro del rango</div>
                 </div>
             </div>
 
-            <div class="alert-list">
-                <div class="alert-item danger">
-                    <span class="alert-icon">🔴</span>
-                    <div class="alert-text">
-                        <strong>ALERTA ALTA — Estación 14017001 (Bajo Magdalena)</strong>
-                        Nivel actual 89 cm · Por encima del umbral de precaución (80 cm) · Tendencia ascendente detectada
-                    </div>
-                </div>
-                <div class="alert-item warning">
-                    <span class="alert-icon">🟡</span>
-                    <div class="alert-text">
-                        <strong>Precaución — Estación 14017003 (Bajo Magdalena)</strong>
-                        Nivel actual 77 cm · Tendencia ascendente · Monitorear en próximas 24h
-                    </div>
-                </div>
-                <div class="alert-item ok">
-                    <span class="alert-icon">🟢</span>
-                    <div class="alert-text">
-                        <strong>Normal — Estaciones zona San Juan (54077210, 54077211, 54077212)</strong>
-                        Todas dentro de rangos normales (44–52 cm) · Niveles estables
-                    </div>
+            <div class="dash-card" style="margin-bottom:18px;">
+                <h3>📋 Eventos sobre umbral crítico (≥ 120 cm)</h3>
+                <p class="card-sub">Top 20 registros más altos en la BD</p>
+                <div id="alertas-container">
+                    <p style="color:#4a6fa5; font-size:13px;">⏳ Cargando alertas desde BD...</p>
                 </div>
             </div>
 
             <div class="charts-row cols-2">
                 <div class="dash-card">
-                    <h3>📊 Historial de eventos extremos</h3>
-                    <p class="card-sub">Niveles que superaron el umbral crítico (120 cm)</p>
+                    <h3>📊 Distribución de niveles</h3>
+                    <p class="card-sub">Frecuencia de rangos de nivel</p>
                     <div style="position:relative; height:210px;">
-                        <canvas id="c-alertas" role="img" aria-label="Historial de alertas">Eventos sobre umbral crítico.</canvas>
+                        <canvas id="c-distrib" role="img" aria-label="Distribución de niveles">Cargando...</canvas>
                     </div>
                 </div>
                 <div class="dash-card">
-                    <h3>🌡️ Distribución de niveles observados</h3>
-                    <p class="card-sub">Frecuencia de rangos de nivel en el período</p>
+                    <h3>🌡️ Promedio por zona</h3>
+                    <p class="card-sub">Nivel medio por cuenca hidrográfica</p>
                     <div style="position:relative; height:210px;">
-                        <canvas id="c-distrib" role="img" aria-label="Histograma de distribución de niveles">Distribución de frecuencias del nivel.</canvas>
+                        <canvas id="c-prom-zonas" role="img" aria-label="Promedio por zona">Cargando...</canvas>
                     </div>
-                </div>
-            </div>
-
-            <div class="dash-card">
-                <h3>📋 Registro de eventos históricos</h3>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Estación</th>
-                                <th>Zona</th>
-                                <th>Nivel registrado</th>
-                                <th>Umbral superado</th>
-                                <th>Severidad</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Enero 2020</td>
-                                <td>14017001</td>
-                                <td>Bajo Magdalena</td>
-                                <td><strong>172 cm</strong></td>
-                                <td>120 cm (+43%)</td>
-                                <td><span class="badge red">🔴 Crítica</span></td>
-                            </tr>
-                            <tr>
-                                <td>Febrero 2020</td>
-                                <td>14017001</td>
-                                <td>Bajo Magdalena</td>
-                                <td>85 cm</td>
-                                <td>80 cm (+6%)</td>
-                                <td><span class="badge yellow">⚠️ Alta</span></td>
-                            </tr>
-                            <tr>
-                                <td>Marzo 2020</td>
-                                <td>14017002</td>
-                                <td>Bajo Magdalena</td>
-                                <td>73 cm</td>
-                                <td>—</td>
-                                <td><span class="badge green">✅ Normal</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
 
@@ -684,7 +566,7 @@
 
             <div class="page-header">
                 <h2>📊 Visualización Power BI</h2>
-                <p>Reporte embebido interactivo · Datos IoT del nivel del mar Colombia 2019–2020</p>
+                <p>Reporte embebido interactivo · Datos IoT del nivel del mar</p>
             </div>
 
             <div class="powerbi-full">
@@ -697,32 +579,30 @@
 
         </div><!-- /page-powerbi -->
 
-
     </section>
-</div><!-- /dashboard-container -->
+</div>
 
 
 <!-- =====================================================================
      JAVASCRIPT
      ===================================================================== -->
 <script>
-/* ---- Datos de series temporales ---- */
-const labels2019 = ['Ene 19','Feb 19','Mar 19','Abr 19','May 19','Jun 19','Jul 19','Ago 19','Sep 19','Oct 19','Nov 19','Dic 19'];
-const labels2020 = ['Ene 20','Feb 20','Mar 20','Abr 20','May 20','Jun 20','Jul 20'];
-const allLabels  = [...labels2019, ...labels2020];
 
-const est1 = [52,55,58,61,59,57,54,56,58,60,63,67, 172,85,73,68,62,57,54];
-const est2 = [45,47,49,52,51,50,48,47,49,51,53,55,  58,52,49,47,45,44,43];
+/* ---- Colores para gráficos ---- */
+const COLORS = [
+    '#1d6fb8','#dc2626','#16a34a','#f59e0b',
+    '#7c3aed','#0ea5e9','#ea580c','#64748b'
+];
 
-/* ---- Navegación entre páginas ---- */
+/* ---- Navegación ---- */
 const pageTitles = {
     'page-overview' : '📊 Dashboard · Resumen ejecutivo',
-    'page-sensores' : '📡 Sensores IoT · Estado de dispositivos',
-    'page-temporal' : '📈 Análisis temporal · Tendencias históricas',
-    'page-geo'      : '🗺️ Georreferenciación · Mapa de estaciones',
-    'page-zonas'    : '🌊 Zonas hidrográficas · Comparativo de cuencas',
-    'page-alertas'  : '🔔 Alertas · Eventos y umbrales críticos',
-    'page-powerbi'  : '📊 Power BI · Visualización embebida'
+    'page-sensores' : '📡 Sensores IoT · Estaciones',
+    'page-temporal' : '📈 Análisis temporal · Tendencias',
+    'page-geo'      : '🗺️ Georreferenciación · Mapa',
+    'page-zonas'    : '🌊 Zonas hidrográficas',
+    'page-alertas'  : '🔔 Alertas · Eventos críticos',
+    'page-powerbi'  : '📊 Power BI'
 };
 
 function showPage(pageId, linkEl) {
@@ -734,49 +614,48 @@ function showPage(pageId, linkEl) {
     return false;
 }
 
-/* ---- Mostrar primera página ---- */
 document.getElementById('page-overview').style.display = 'block';
 
-/* ---- Filtro de tabla ---- */
+/* ---- Filtro tabla ---- */
 function filterTable(tbodyId, val, attr) {
     document.querySelectorAll('#' + tbodyId + ' tr').forEach(row => {
         row.style.display = (val === 'all' || row.getAttribute(attr) === val) ? '' : 'none';
     });
 }
 
-/* ---- Tooltip del mapa ---- */
+/* ---- Tooltip mapa ---- */
 document.querySelectorAll('.map-station').forEach(dot => {
     dot.style.cursor = 'pointer';
     dot.addEventListener('mouseenter', function(e) {
-        const tip     = document.getElementById('map-tooltip');
-        const mapBox  = dot.closest('.map-container').getBoundingClientRect();
-        const dotBox  = dot.getBoundingClientRect();
+        const tip    = document.getElementById('map-tooltip');
+        const mapBox = dot.closest('.map-container').getBoundingClientRect();
+        const dotBox = dot.getBoundingClientRect();
         tip.innerHTML =
             '<strong>' + this.dataset.name + '</strong><br>' +
-            'Zona: '           + this.dataset.zona   + '<br>' +
-            'Nivel actual: '   + this.dataset.nivel  + '<br>' +
-            'Máx. histórico: ' + this.dataset.max    + '<br>' +
+            'Zona: '        + this.dataset.zona   + '<br>' +
+            'Promedio: '    + this.dataset.nivel  + '<br>' +
+            'Máx histórico: ' + this.dataset.max  + '<br>' +
             'Alerta: <strong>' + this.dataset.alerta + '</strong>';
         tip.style.display = 'block';
-        tip.style.left    = (dotBox.left - mapBox.left + 14) + 'px';
-        tip.style.top     = (dotBox.top  - mapBox.top  - 10) + 'px';
+        tip.style.left = (dotBox.left - mapBox.left + 14) + 'px';
+        tip.style.top  = (dotBox.top  - mapBox.top  - 10) + 'px';
     });
     dot.addEventListener('mouseleave', function() {
         document.getElementById('map-tooltip').style.display = 'none';
     });
 });
 
-/* ---- Helper para crear gráficos ---- */
+/* ---- Helper chart ---- */
 function mkChart(id, type, labels, datasets, extraOpts) {
     const el = document.getElementById(id);
     if (!el) return;
-    const defaultScales = {
-        x: { ticks: { font: { size: 9 }, maxTicksLimit: 10, autoSkip: true } },
+    const defaultScales = type === 'doughnut' || type === 'pie' ? undefined : {
+        x: { ticks: { font: { size: 9 }, maxTicksLimit: 10 } },
         y: { ticks: { font: { size: 9 } } }
     };
     return new Chart(el, {
-        type: type,
-        data: { labels: labels, datasets: datasets },
+        type,
+        data: { labels, datasets },
         options: Object.assign({
             responsive: true,
             maintainAspectRatio: false,
@@ -786,128 +665,220 @@ function mkChart(id, type, labels, datasets, extraOpts) {
     });
 }
 
-/* ---- Inicializar todos los charts ---- */
-window.addEventListener('load', function() {
+/* ---- Cargar datos desde APIs ---- */
+window.addEventListener('load', async function() {
 
-    /* === PAGE 1: Overview === */
-    mkChart('c-temporal', 'line', allLabels, [
-        { data: est1, borderColor: '#1d6fb8', backgroundColor: 'rgba(29,111,184,0.07)',
-          borderWidth: 2, pointRadius: 2, tension: 0.35 },
-        { data: est2, borderColor: '#38bdf8', backgroundColor: 'rgba(56,189,248,0.05)',
-          borderWidth: 2, pointRadius: 2, tension: 0.35, borderDash: [4,3] }
-    ]);
+    /* === Serie temporal === */
+    try {
+        const res  = await fetch('/api/serie-temporal');
+        const data = await res.json();
+        const labels   = data.labels;
+        const series   = data.series;
+        const codigos  = Object.keys(series);
 
-    mkChart('c-anual', 'bar', ['2019','2020'], [
-        { label: 'Est. 14017001', data: [7020, 6500], backgroundColor: '#1d6fb8' },
-        { label: 'Est. 54077210', data: [5940, 3700], backgroundColor: '#93c5fd' }
-    ]);
+        /* Overview - c-temporal */
+        const datasetsT = codigos.map((cod, i) => ({
+            data: series[cod],
+            borderColor: COLORS[i % COLORS.length],
+            backgroundColor: 'transparent',
+            borderWidth: 2, pointRadius: 2, tension: 0.35,
+            borderDash: i > 0 ? [4,3] : []
+        }));
+        mkChart('c-temporal', 'line', labels, datasetsT);
 
-    mkChart('c-zonas-donut', 'doughnut',
-        ['San Juan', 'Bajo Magdalena'],
-        [{ data: [55, 45], backgroundColor: ['#1d6fb8','#dc2626'], borderWidth: 3, borderColor: '#fff' }],
-        { scales: undefined }
-    );
+        /* Leyenda temporal */
+        const legT = document.getElementById('legend-temporal');
+        if (legT) legT.innerHTML = codigos.map((c,i) =>
+            `<span><span class="legend-dot" style="background:${COLORS[i]};"></span>Est. ${c}</span>`
+        ).join('');
 
-    const ma3 = allLabels.map(function(_, i) {
-        const slice = est1.slice(Math.max(0, i - 2), i + 1);
-        return Math.round(slice.reduce(function(a, b){ return a + b; }, 0) / slice.length);
-    });
-    mkChart('c-media', 'line', allLabels, [
-        { data: ma3, borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,0.06)',
-          borderWidth: 2, pointRadius: 0, tension: 0.45 }
-    ]);
+        /* Serie full - c-serie-full */
+        mkChart('c-serie-full', 'line', labels, datasetsT);
+        const legS = document.getElementById('legend-serie');
+        if (legS) legS.innerHTML = codigos.map((c,i) =>
+            `<span><span class="legend-dot" style="background:${COLORS[i]};"></span>Est. ${c}</span>`
+        ).join('');
 
-    /* === PAGE 2: Sensores === */
-    mkChart('c-sensores-bar', 'bar',
-        ['14017001','54077210','14017002','54077211','14017003'],
-        [{ data: [13520, 9640, 8100, 7200, 6800],
-           backgroundColor: ['#1d6fb8','#38bdf8','#7dd3fc','#bae6fd','#e0f2fe'] }],
-        { indexAxis: 'y' }
-    );
+        /* Media móvil */
+        const primeraSerie = series[codigos[0]] || [];
+        const ma3 = primeraSerie.map((_, i) => {
+            const sl = primeraSerie.slice(Math.max(0, i-2), i+1);
+            return Math.round(sl.reduce((a,b) => a+b, 0) / sl.length);
+        });
+        mkChart('c-media', 'line', labels, [{
+            data: ma3, borderColor: '#7c3aed',
+            backgroundColor: 'rgba(124,58,237,0.06)',
+            borderWidth: 2, pointRadius: 0, tension: 0.45
+        }]);
 
-    mkChart('c-sensores-pie', 'pie',
-        ['14017001','54077210','14017002','54077211','14017003'],
-        [{ data: [30, 21, 18, 16, 15],
-           backgroundColor: ['#1d6fb8','#38bdf8','#7dd3fc','#bae6fd','#e0f2fe'],
-           borderWidth: 2 }],
-        { scales: undefined }
-    );
+    } catch(e) { console.error('Serie temporal:', e); }
 
-    /* === PAGE 3: Temporal === */
-    mkChart('c-serie-full', 'line', allLabels, [
-        { data: est1, borderColor: '#1d6fb8', backgroundColor: 'rgba(29,111,184,0.06)',
-          borderWidth: 2, tension: 0.35,
-          pointRadius:          est1.map(function(_, i){ return i === 12 ? 7 : 2; }),
-          pointBackgroundColor: est1.map(function(_, i){ return i === 12 ? '#dc2626' : '#1d6fb8'; }) },
-        { data: est2, borderColor: '#38bdf8', borderWidth: 2,
-          pointRadius: 2, tension: 0.35, borderDash: [4,3] }
-    ]);
 
-    mkChart('c-semestre', 'bar',
-        ['S1 2019','S2 2019','S1 2020'],
-        [{ data: [57, 59, 69], backgroundColor: ['#1d6fb8','#38bdf8','#dc2626'] }]
-    );
+    /* === Comparativo anual === */
+    try {
+        const res  = await fetch('/api/comparativo-anual');
+        const data = await res.json();
+        const anios    = data.anios;
+        const series   = data.series;
+        const codigos  = Object.keys(series);
 
-    mkChart('c-variab', 'bar', labels2019.slice(0, 7), [
-        { data: [3, 4, 5, 4, 3, 4, 6], backgroundColor: '#7c3aed' }
-    ]);
+        const datasetsA = codigos.map((cod, i) => ({
+            label: 'Est. ' + cod,
+            data: series[cod],
+            backgroundColor: COLORS[i % COLORS.length]
+        }));
+        mkChart('c-anual', 'bar', anios, datasetsA);
 
-    mkChart('c-comp-anios', 'bar',
-        ['Ene','Feb','Mar','Abr','May','Jun','Jul'],
-        [
-            { label: '2019', data: [52,55,58,61,59,57,54], backgroundColor: '#1d6fb8' },
-            { label: '2020', data: [172,85,73,68,62,57,54], backgroundColor: '#dc2626' }
-        ]
-    );
+        const legA = document.getElementById('legend-anual');
+        if (legA) legA.innerHTML = codigos.map((c,i) =>
+            `<span><span class="legend-dot" style="background:${COLORS[i]};"></span>Est. ${c}</span>`
+        ).join('');
 
-    /* === PAGE 4: Geo === */
-    mkChart('c-geo-bar', 'bar',
-        ['14017001 Act.','14017001 Máx.','54077210 Act.','54077210 Máx.','14017002 Act.','14017002 Máx.'],
-        [{ data: [89, 172, 52, 68, 61, 95],
-           backgroundColor: ['#dc2626','#fca5a5','#16a34a','#86efac','#ea580c','#fdba74'] }]
-    );
+    } catch(e) { console.error('Comparativo anual:', e); }
 
-    mkChart('c-costa', 'bar',
-        ['Caribe (Bajo Magdalena)','Pacífico (San Juan)'],
-        [
-            { label: '2019', data: [7020, 5940], backgroundColor: '#1d6fb8' },
-            { label: '2020', data: [6500, 3700], backgroundColor: '#38bdf8' }
-        ]
-    );
 
-    /* === PAGE 5: Zonas === */
-    mkChart('c-zonas-bar', 'bar',
-        ['San Juan','Bajo Magdalena'],
-        [{ data: [21040, 17180], backgroundColor: ['#1d6fb8','#dc2626'] }]
-    );
+    /* === Zonas donut === */
+    try {
+        const res  = await fetch('/api/zonas');
+        const data = await res.json();
+        const labels = data.map(z => z.zona);
+        const vals   = data.map(z => z.total);
+        const proms  = data.map(z => z.promedio);
+        const maxs   = data.map(z => z.maximo);
 
-    mkChart('c-zonas-line', 'line', allLabels, [
-        { data: est2, borderColor: '#1d6fb8', borderWidth: 2, pointRadius: 1, tension: 0.35, label: 'San Juan' },
-        { data: est1, borderColor: '#dc2626', borderWidth: 2, pointRadius: 1, tension: 0.35,
-          borderDash: [4,3], label: 'Bajo Magdalena' }
-    ]);
+        mkChart('c-zonas-donut', 'doughnut', labels, [{
+            data: vals,
+            backgroundColor: COLORS.slice(0, labels.length),
+            borderWidth: 3, borderColor: '#fff'
+        }]);
 
-    mkChart('c-zonas-anual', 'bar', ['2019','2020'], [
-        { label: 'San Juan',       data: [5940, 3700], backgroundColor: '#1d6fb8' },
-        { label: 'Bajo Magdalena', data: [7020, 6500], backgroundColor: '#dc2626' }
-    ]);
+        const legZ = document.getElementById('legend-zonas');
+        if (legZ) legZ.innerHTML = labels.map((l,i) =>
+            `<span><span class="legend-dot" style="background:${COLORS[i]};"></span>${l}</span>`
+        ).join('');
 
-    /* === PAGE 6: Alertas === */
-    mkChart('c-alertas', 'bar',
-        ['Ene 19','Jul 19','Ene 20','Abr 20'],
-        [{ data: [0, 0, 172, 0],
-           backgroundColor: ['#86efac','#86efac','#dc2626','#86efac'] }],
-        { scales: {
-            x: { ticks: { font: { size: 10 } } },
-            y: { max: 200, ticks: { font: { size: 9 } } }
-        }}
-    );
+        /* Zonas bar */
+        mkChart('c-zonas-bar', 'bar', labels, [{
+            data: vals,
+            backgroundColor: COLORS.slice(0, labels.length)
+        }]);
 
-    mkChart('c-distrib', 'bar',
-        ['0–30','31–50','51–70','71–90','91–120','121–172'],
-        [{ data: [450, 3200, 14800, 7300, 2200, 450],
-           backgroundColor: ['#86efac','#93c5fd','#1d6fb8','#ea580c','#f97316','#dc2626'] }]
-    );
+        /* Zonas promedio vs máximo */
+        mkChart('c-zonas-maxprom', 'bar', labels, [
+            { label: 'Promedio', data: proms, backgroundColor: '#1d6fb8' },
+            { label: 'Máximo',   data: maxs,  backgroundColor: '#dc2626' }
+        ]);
+
+        /* Promedio zonas (alertas) */
+        mkChart('c-prom-zonas', 'bar', labels, [{
+            data: proms,
+            backgroundColor: COLORS.slice(0, labels.length)
+        }]);
+
+    } catch(e) { console.error('Zonas:', e); }
+
+
+    /* === Estaciones (sensores) === */
+    try {
+        const res  = await fetch('/api/estaciones');
+        const data = await res.json();
+        const nombres = data.map(e => 'Est. ' + e.codigo);
+        const maxVals = data.map(e => e.max_valor);
+        const lects   = data.map(e => e.lecturas);
+
+        mkChart('c-sensores-bar', 'bar', nombres, [{
+            data: maxVals,
+            backgroundColor: maxVals.map(v =>
+                v > 120 ? '#dc2626' : v > 80 ? '#f59e0b' : '#16a34a'
+            )
+        }], { indexAxis: 'y' });
+
+        mkChart('c-sensores-pie', 'pie', nombres, [{
+            data: lects,
+            backgroundColor: COLORS.slice(0, nombres.length),
+            borderWidth: 2
+        }], { scales: undefined });
+
+        /* Geo bar */
+        const promsGeo = data.map(e => e.promedio);
+        mkChart('c-geo-bar', 'bar', nombres, [
+            { label: 'Promedio', data: promsGeo, backgroundColor: '#1d6fb8' },
+            { label: 'Máximo',   data: maxVals,  backgroundColor: '#dc2626' }
+        ]);
+
+    } catch(e) { console.error('Estaciones:', e); }
+
+
+    /* === Promedios temporales === */
+    try {
+        const res  = await fetch('/api/promedios-temporales');
+        const data = await res.json();
+
+        const semLabels = data.semestres.map(s => s.label);
+        const semVals   = data.semestres.map(s => s.promedio);
+        mkChart('c-semestre', 'bar', semLabels, [{
+            data: semVals,
+            backgroundColor: COLORS.slice(0, semLabels.length)
+        }]);
+
+        const mesLabels = data.meses.map(m => m.nombre.substring(0,3));
+        const mesVariab = data.meses.map(m => m.variabilidad);
+        const mesProm   = data.meses.map(m => m.promedio);
+        mkChart('c-variab', 'bar', mesLabels, [{
+            data: mesVariab, backgroundColor: '#7c3aed'
+        }]);
+        mkChart('c-prom-mes', 'line', mesLabels, [{
+            data: mesProm, borderColor: '#0ea5e9',
+            backgroundColor: 'rgba(14,165,233,0.08)',
+            borderWidth: 2, pointRadius: 3, tension: 0.4
+        }]);
+
+        /* Distribución de niveles */
+        mkChart('c-distrib', 'bar',
+            ['0–30','31–50','51–70','71–90','91–120','121+'],
+            [{ data: [0,0,0,0,0,0], backgroundColor: COLORS }]
+        );
+
+    } catch(e) { console.error('Promedios:', e); }
+
+
+    /* === Alertas tabla === */
+    try {
+        const res  = await fetch('/api/alertas');
+        const data = await res.json();
+        const cont = document.getElementById('alertas-container');
+        if (!cont) return;
+
+        if (data.length === 0) {
+            cont.innerHTML = '<p style="color:#16a34a; font-size:13px;">✅ No hay eventos que superen el umbral crítico de 120 cm.</p>';
+            return;
+        }
+
+        let html = `<div class="table-wrap"><table>
+            <thead><tr>
+                <th>Fecha</th><th>Código</th><th>Nombre estación</th>
+                <th>Zona</th><th>Valor (cm)</th><th>Hora</th><th>Severidad</th>
+            </tr></thead><tbody>`;
+
+        data.forEach(a => {
+            const sev = a.valor > 150
+                ? '<span class="badge red">🔴 Crítica</span>'
+                : '<span class="badge yellow">⚠️ Alta</span>';
+            html += `<tr>
+                <td>${a.fecha}</td>
+                <td><strong>${a.codigo}</strong></td>
+                <td>${a.nombre}</td>
+                <td>${a.zona}</td>
+                <td><strong style="color:#dc2626;">${a.valor}</strong></td>
+                <td>${a.hora || '-'}</td>
+                <td>${sev}</td>
+            </tr>`;
+        });
+
+        html += '</tbody></table></div>';
+        cont.innerHTML = html;
+
+    } catch(e) { console.error('Alertas:', e); }
 
 });
 </script>

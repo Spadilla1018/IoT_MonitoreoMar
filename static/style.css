@@ -593,6 +593,37 @@ section {
 }
 
 .hero-section {
-    min-height: auto;
-    padding: 40px 30px 20px;
+    min-height: 88vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding: 60px 40px;
+    flex-wrap: wrap;
+}
+
+.hero-content {
+    max-width: 580px;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+    border-radius: 20px;
+    padding: 50px 40px;
+    border: 1px solid rgba(255,255,255,0.1);
+    flex: 1;
+    min-width: 300px;
+}
+
+.login-box {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 18px;
+    padding: 40px;
+    width: 100%;
+    max-width: 380px;
+    min-width: 300px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 76, 140, 0.45);
+    flex-shrink: 0;
 }

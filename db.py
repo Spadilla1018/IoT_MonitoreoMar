@@ -15,8 +15,7 @@ def get_connection():
         server=DB_SERVER,
         user=DB_USER,
         password=DB_PASSWORD,
-        database=DB_NAME,
-        tds_version="7.4"
+        database=DB_NAME
     )
 
 

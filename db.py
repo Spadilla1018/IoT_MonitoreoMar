@@ -348,8 +348,17 @@ def registrar_usuario(nombre, apellido, email, password):
             VALUES (%s, %s, %s, %s, 'viewer', 1)
         """, (nombre, apellido, email, password))
         conn.commit()
+
+        # Verificar que realmente quedó guardado
+        cursor.execute("SELECT ID_Usuario FROM Usuarios WHERE Email = %s", (email,))
+        row = cursor.fetchone()
         conn.close()
-        return {"ok": True}
+
+        if row:
+            return {"ok": True, "id": row[0]}
+        else:
+            return {"ok": False, "error": "Insert ejecutado pero usuario no encontrado"}
+
     except Exception as e:
         conn.close()
         return {"ok": False, "error": str(e)}

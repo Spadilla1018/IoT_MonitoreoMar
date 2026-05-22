@@ -8,6 +8,7 @@ from db import (
     get_promedios_temporales,
     get_alertas,
     verificar_usuario,
+    registrar_usuario,      
 )
 
 app = Flask(__name__)
@@ -180,3 +181,50 @@ def logout():
 
 if __name__ == "__main__":
     app.run(debug=True)
+    
+# =========================================
+#   REGISTRO
+# =========================================
+
+@app.route("/registro", methods=["POST"])
+def registro():
+    nombre   = request.form.get("nombre")
+    apellido = request.form.get("apellido")
+    email    = request.form.get("email")
+    password = request.form.get("password")
+    confirmar = request.form.get("confirmar")
+
+    # Validaciones básicas
+    if not all([nombre, apellido, email, password, confirmar]):
+        return render_template("index.html",
+                               usuario=None,
+                               error_registro="Todos los campos son obligatorios",
+                               mostrar_registro=True)
+
+    if password != confirmar:
+        return render_template("index.html",
+                               usuario=None,
+                               error_registro="Las contraseñas no coinciden",
+                               mostrar_registro=True)
+
+    if len(password) < 6:
+        return render_template("index.html",
+                               usuario=None,
+                               error_registro="La contraseña debe tener mínimo 6 caracteres",
+                               mostrar_registro=True)
+
+    resultado = registrar_usuario(nombre, apellido, email, password)
+
+    if resultado["ok"]:
+        return render_template("index.html",
+                               usuario=None,
+                               exito_registro="✅ Usuario registrado correctamente. Ya puedes iniciar sesión.")
+    else:
+        if "UNIQUE" in str(resultado["error"]) or "duplicate" in str(resultado["error"]).lower():
+            error_msg = "Ese correo ya está registrado."
+        else:
+            error_msg = f"Error al registrar: {resultado['error']}"
+        return render_template("index.html",
+                               usuario=None,
+                               error_registro=error_msg,
+                               mostrar_registro=True)

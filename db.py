@@ -334,3 +334,22 @@ def verificar_usuario(email, password):
             "rol":      row[3],
         }
     return None
+
+# =========================================
+#   REGISTRO DE NUEVO USUARIO
+# =========================================
+
+def registrar_usuario(nombre, apellido, email, password):
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+            INSERT INTO Usuarios (Nombre, Apellido, Email, Password, Rol, Activo)
+            VALUES (%s, %s, %s, %s, 'viewer', 1)
+        """, (nombre, apellido, email, password))
+        conn.commit()
+        conn.close()
+        return {"ok": True}
+    except Exception as e:
+        conn.close()
+        return {"ok": False, "error": str(e)}

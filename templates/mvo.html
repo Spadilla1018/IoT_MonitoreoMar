@@ -1,48 +1,54 @@
 {% extends "base_interno.html" %}
 
-{% block title %}Nosotros – SIMMAR-IoT{% endblock %}
+{% block title %}Acerca del Proyecto – SIMMAR-IoT{% endblock %}
 
 {% block content %}
 
 <div class="mvo-wrapper">
 
-    <!-- Banner interno de la sección -->
     <div class="mvo-banner">
-        <div class="mvo-banner-content">
-            <h1>🌊 Sobre Nosotros</h1>
-            <p>Conoce la misión, visión, objetivos y compromisos con el desarrollo sostenible</p>
-        </div>
+        <h1>🌊 Acerca del Proyecto</h1>
+        <p>Análisis de datos del nivel del mar en Colombia · SIMMAR-IoT</p>
     </div>
 
     <div class="cards-container">
 
-        <!-- Misión -->
+        <!-- Descripción -->
         <div class="card card-mision">
             <div class="card-icon-header">
-                <div class="card-icon mision-icon">🎯</div>
+                <div class="card-icon mision-icon">📋</div>
                 <div>
-                    <h3>Misión</h3>
+                    <h3>Descripción del Proyecto</h3>
+                    <span class="card-tag">¿De qué trata?</span>
                 </div>
             </div>
             <p>
-                Desarrollar una plataforma basada en tecnologías IoT que permita monitorear en tiempo real 
-                el aumento del nivel del mar en ciudades costeras, proporcionando datos confiables para la 
-                toma de decisiones ambientales y la prevención de riesgos.
+                <strong>SIMMAR-IoT</strong> es un proyecto de análisis de datos enfocado en el 
+                comportamiento histórico del nivel del mar en dos estaciones costeras de Colombia: 
+                <strong>TESORO INVEMAR</strong> (costa Caribe, Bolívar) y <strong>JUANCHACO - AUT</strong> 
+                (costa Pacífica, Valle del Cauca). A partir de datos reales recopilados entre 
+                <strong>2019 y 2020</strong>, se construyó un Data Warehouse, se realizaron análisis 
+                exploratorios y se desarrolló una plataforma web interactiva para la visualización 
+                de los resultados.
             </p>
         </div>
 
-        <!-- Visión -->
+        <!-- Alcance -->
         <div class="card card-vision">
             <div class="card-icon-header">
                 <div class="card-icon vision-icon">🔭</div>
                 <div>
-                    <h3>Visión</h3>
+                    <h3>Alcance</h3>
+                    <span class="card-tag">¿Qué abarca el proyecto?</span>
                 </div>
             </div>
             <p>
-                Ser una solución tecnológica de referencia en el monitoreo ambiental costero, integrando 
-                sensores IoT, analítica de datos y visualización inteligente para anticipar riesgos asociados 
-                al aumento del nivel del mar y contribuir a la sostenibilidad de las ciudades costeras.
+                El proyecto abarca el análisis de <strong>más de 64 mil mediciones</strong> del nivel 
+                del mar registradas por sensores IoT en las costas colombianas. Se construyó un 
+                modelo dimensional (Data Warehouse) con tablas de hechos y dimensiones, se integraron 
+                los datos en <strong>Power BI</strong> para su visualización interactiva, y se desarrolló 
+                una plataforma web conectada en tiempo real a la base de datos en la nube, 
+                permitiendo explorar tendencias, comparativos por ubicación y análisis temporales.
             </p>
         </div>
 
@@ -51,31 +57,73 @@
             <div class="card-icon-header">
                 <div class="card-icon objetivos-icon">🏆</div>
                 <div>
-                    <h3>Objetivos</h3>
+                    <h3>Objetivos del Proyecto</h3>
+                    <span class="card-tag">¿Qué se logró?</span>
                 </div>
             </div>
             <ul class="objetivos-list">
                 <li>
-                    <span class="obj-icon">📡</span>
-                    <span>Implementar sensores IoT capaces de medir variaciones del nivel del mar en tiempo real.</span>
-                </li>
-                <li>
-                    <span class="obj-icon">🔒</span>
-                    <span>Transmitir los datos a una plataforma centralizada mediante protocolos seguros.</span>
-                </li>
-                <li>
                     <span class="obj-icon">🗄️</span>
-                    <span>Procesar y almacenar la información para análisis histórico y predictivo.</span>
+                    <span>Diseñar e implementar un Data Warehouse con datos históricos del nivel del mar en Colombia.</span>
                 </li>
                 <li>
                     <span class="obj-icon">📊</span>
-                    <span>Generar visualizaciones que permitan interpretar tendencias y alertas tempranas.</span>
+                    <span>Analizar el comportamiento temporal y geográfico del nivel del mar entre 2019 y 2020.</span>
                 </li>
                 <li>
-                    <span class="obj-icon">🛡️</span>
-                    <span>Apoyar la toma de decisiones en gestión del riesgo costero.</span>
+                    <span class="obj-icon">📈</span>
+                    <span>Desarrollar visualizaciones interactivas en Power BI que permitan identificar tendencias y patrones.</span>
+                </li>
+                <li>
+                    <span class="obj-icon">🌐</span>
+                    <span>Construir una plataforma web conectada a la base de datos en la nube para consulta pública de los resultados.</span>
+                </li>
+                <li>
+                    <span class="obj-icon">🗺️</span>
+                    <span>Georreferenciar las estaciones de monitoreo y comparar el comportamiento entre la costa Caribe y la costa Pacífica.</span>
                 </li>
             </ul>
+        </div>
+
+        <!-- Tecnologías -->
+        <div class="card" style="border-left-color:#7c3aed;">
+            <div class="card-icon-header">
+                <div class="card-icon" style="background:#ede9fe;">🛠️</div>
+                <div>
+                    <h3>Tecnologías Utilizadas</h3>
+                    <span class="card-tag">Stack tecnológico del proyecto</span>
+                </div>
+            </div>
+            <div class="ods-grid">
+                <div class="ods-card" style="background:#f5f3ff; border:1px solid #c4b5fd;">
+                    <div class="ods-numero" style="background:#7c3aed; color:white; font-size:20px;">🗄️</div>
+                    <div class="ods-content">
+                        <h4>SQL Server · somee.com</h4>
+                        <p>Base de datos en la nube con modelo dimensional (Data Warehouse). Tablas: Fact_NivelMar, Dim_Estacion, Dim_Tiempo, Dim_Ubicacion.</p>
+                    </div>
+                </div>
+                <div class="ods-card" style="background:#fef3c7; border:1px solid #fcd34d;">
+                    <div class="ods-numero" style="background:#f59e0b; color:white; font-size:20px;">📊</div>
+                    <div class="ods-content">
+                        <h4>Power BI</h4>
+                        <p>Reporte interactivo con 5 páginas de análisis: Resumen Ejecutivo, Análisis por Tiempo, Ubicación, Dispositivos y Detalle de Mediciones.</p>
+                    </div>
+                </div>
+                <div class="ods-card" style="background:#dbeafe; border:1px solid #93c5fd;">
+                    <div class="ods-numero" style="background:#1d6fb8; color:white; font-size:20px;">🐍</div>
+                    <div class="ods-content">
+                        <h4>Python · Flask</h4>
+                        <p>Backend de la plataforma web desarrollado en Flask, con APIs REST que conectan la interfaz con la base de datos en somee.</p>
+                    </div>
+                </div>
+                <div class="ods-card" style="background:#dcfce7; border:1px solid #86efac;">
+                    <div class="ods-numero" style="background:#16a34a; color:white; font-size:20px;">🌐</div>
+                    <div class="ods-content">
+                        <h4>Render · GitHub</h4>
+                        <p>Plataforma web desplegada en Render con integración continua desde GitHub. Disponible públicamente en simmar-iot.onrender.com.</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- ODS -->
@@ -88,7 +136,7 @@
                 </div>
             </div>
             <p style="margin-bottom:18px;">
-                SIMMAR-IoT contribuye directamente a los siguientes Objetivos de Desarrollo Sostenible 
+                Este proyecto contribuye directamente a los siguientes Objetivos de Desarrollo Sostenible 
                 de las Naciones Unidas, aportando datos e inteligencia para la gestión ambiental costera 
                 en Colombia.
             </p>
@@ -98,7 +146,7 @@
                     <div class="ods-numero">13</div>
                     <div class="ods-content">
                         <h4>Acción por el Clima</h4>
-                        <p>Monitorear el aumento del nivel del mar es clave para entender los efectos del cambio climático en las costas colombianas y generar alertas tempranas que protejan a las comunidades.</p>
+                        <p>El análisis del nivel del mar permite comprender los efectos del cambio climático en las costas colombianas y generar información para la toma de decisiones.</p>
                     </div>
                 </div>
 
@@ -106,7 +154,7 @@
                     <div class="ods-numero">14</div>
                     <div class="ods-content">
                         <h4>Vida Submarina</h4>
-                        <p>El análisis de datos costeros contribuye a la conservación de los ecosistemas marinos, detectando variaciones que pueden afectar la biodiversidad del océano Pacífico y el Mar Caribe.</p>
+                        <p>Los datos analizados contribuyen a la comprensión de las variaciones oceánicas que afectan los ecosistemas del Pacífico colombiano y el Mar Caribe.</p>
                     </div>
                 </div>
 
@@ -114,7 +162,7 @@
                     <div class="ods-numero">11</div>
                     <div class="ods-content">
                         <h4>Ciudades y Comunidades Sostenibles</h4>
-                        <p>Apoyamos la planificación urbana resiliente en ciudades costeras, proporcionando información estratégica para la prevención de desastres y la gestión del riesgo territorial.</p>
+                        <p>El análisis histórico apoya la planificación de ciudades costeras resilientes, identificando patrones de riesgo y zonas vulnerables.</p>
                     </div>
                 </div>
 
@@ -122,7 +170,7 @@
                     <div class="ods-numero">6</div>
                     <div class="ods-content">
                         <h4>Agua Limpia y Saneamiento</h4>
-                        <p>El monitoreo del nivel del mar permite identificar intrusiones salinas en fuentes de agua dulce, protegiendo la calidad del agua en zonas costeras vulnerables.</p>
+                        <p>El monitoreo del nivel del mar permite identificar posibles intrusiones salinas en fuentes de agua dulce en zonas costeras de Colombia.</p>
                     </div>
                 </div>
 

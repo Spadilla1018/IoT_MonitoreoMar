@@ -5,6 +5,8 @@
 {% block content %}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <div class="dashboard-container">
 
@@ -56,8 +58,7 @@
                 <p>Indicadores clave del monitoreo del nivel del mar · Datos reales desde BD</p>
             </div>
 
-            <!-- KPIs dinámicos -->
-            <div class="kpi-grid" id="kpis-resumen">
+            <div class="kpi-grid">
                 <div class="kpi-card">
                     <div class="kpi-label">📊 Promedio Nivel del Mar (m)</div>
                     <div class="kpi-value" id="kpi-promedio">--</div>
@@ -80,7 +81,6 @@
                 </div>
             </div>
 
-            <!-- Filtro año -->
             <div class="filter-bar">
                 <label>📅 Filtrar por año:</label>
                 <select id="filtro-anio-resumen" onchange="filtrarResumen()">
@@ -106,42 +106,7 @@
                 <div class="dash-card">
                     <h3>🗺️ Ubicación de Estaciones</h3>
                     <p class="card-sub">Departamento por Latitud y Longitud</p>
-                    <div class="map-container" style="height:250px;">
-                        <svg id="mapa-resumen" viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="500" height="280" fill="#b8dff5"/>
-                            <ellipse cx="240" cy="130" rx="100" ry="90" fill="#a8d08d"/>
-                            <ellipse cx="260" cy="200" rx="70" ry="55" fill="#90c470"/>
-                            <ellipse cx="160" cy="145" rx="50" ry="65" fill="#9fd49a"/>
-                            <ellipse cx="320" cy="110" rx="40" ry="48" fill="#7bc474"/>
-                            <ellipse cx="205" cy="100" rx="55" ry="35" fill="#88c057"/>
-                            <text x="220" y="140" font-size="11" fill="#2d5a27" font-family="sans-serif" font-weight="600">COLOMBIA</text>
-                            <text x="70" y="148" font-size="8" fill="#1a4a8a" font-family="sans-serif">Pacífico</text>
-                            <text x="340" y="95" font-size="8" fill="#1a4a8a" font-family="sans-serif">Caribe</text>
-                            <!-- TESORO INVEMAR - Bolívar (Caribe) -->
-                            <circle class="map-station" cx="265" cy="82" r="10"
-                                fill="#1d6fb8" stroke="white" stroke-width="2"
-                                data-nombre="TESORO INVEMAR"
-                                data-depto="BOLÍVAR"
-                                data-lat="10.235"
-                                data-lon="-75.741"/>
-                            <text x="278" y="78" font-size="7" fill="#003d7a" font-family="sans-serif" font-weight="600">TESORO INVEMAR</text>
-                            <!-- JUANCHACO AUT - Valle del Cauca (Pacífico) -->
-                            <circle class="map-station" cx="155" cy="178" r="10"
-                                fill="#16a34a" stroke="white" stroke-width="2"
-                                data-nombre="JUANCHACO - AUT"
-                                data-depto="VALLE DEL CAUCA"
-                                data-lat="3.925"
-                                data-lon="-77.349"/>
-                            <text x="168" y="182" font-size="7" fill="#14532d" font-family="sans-serif">JUANCHACO-AUT</text>
-                            <!-- Leyenda -->
-                            <rect x="8" y="225" width="130" height="48" rx="4" fill="rgba(255,255,255,0.92)"/>
-                            <circle cx="22" cy="238" r="6" fill="#1d6fb8"/>
-                            <text x="33" y="242" font-size="7" fill="#333" font-family="sans-serif">BOLÍVAR (Caribe)</text>
-                            <circle cx="22" cy="255" r="6" fill="#16a34a"/>
-                            <text x="33" y="259" font-size="7" fill="#333" font-family="sans-serif">VALLE DEL CAUCA (Pacífico)</text>
-                        </svg>
-                        <div class="map-tooltip" id="map-tooltip-resumen"></div>
-                    </div>
+                    <div id="mapa-resumen-leaflet" style="height:250px; border-radius:10px; z-index:1;"></div>
                 </div>
             </div>
 
@@ -158,7 +123,6 @@
                 <p>Comportamiento temporal del nivel del mar por año, mes y departamento</p>
             </div>
 
-            <!-- Filtro año -->
             <div class="filter-bar">
                 <label>📅 Año:</label>
                 <select id="filtro-anio-tiempo" onchange="filtrarTiempo()">
@@ -209,7 +173,6 @@
                 <p>Distribución geográfica y comparativo por estación y departamento</p>
             </div>
 
-            <!-- Filtros -->
             <div class="filter-bar">
                 <label>🏢 Departamento:</label>
                 <select id="filtro-depto" onchange="filtrarUbicacion()">
@@ -229,29 +192,7 @@
                 <div class="dash-card">
                     <h3>🗺️ Municipio por Latitud y Longitud</h3>
                     <p class="card-sub">Ubicación geográfica de estaciones</p>
-                    <div class="map-container" style="height:280px;">
-                        <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="500" height="280" fill="#b8dff5"/>
-                            <ellipse cx="240" cy="130" rx="100" ry="90" fill="#a8d08d"/>
-                            <ellipse cx="260" cy="200" rx="70" ry="55" fill="#90c470"/>
-                            <ellipse cx="160" cy="145" rx="50" ry="65" fill="#9fd49a"/>
-                            <ellipse cx="320" cy="110" rx="40" ry="48" fill="#7bc474"/>
-                            <text x="215" y="140" font-size="11" fill="#2d5a27" font-family="sans-serif" font-weight="600">COLOMBIA</text>
-                            <!-- TESORO INVEMAR -->
-                            <circle cx="265" cy="82" r="12" fill="#1d6fb8" stroke="white" stroke-width="2.5"/>
-                            <text x="280" y="76" font-size="7" fill="#003d7a" font-family="sans-serif" font-weight="600">10.235, -75.741</text>
-                            <text x="280" y="86" font-size="6" fill="#003d7a" font-family="sans-serif">TESORO INVEMAR</text>
-                            <!-- JUANCHACO -->
-                            <circle cx="155" cy="178" r="12" fill="#16a34a" stroke="white" stroke-width="2.5"/>
-                            <text x="170" y="172" font-size="7" fill="#14532d" font-family="sans-serif" font-weight="600">3.925, -77.349</text>
-                            <text x="170" y="182" font-size="6" fill="#14532d" font-family="sans-serif">JUANCHACO-AUT</text>
-                            <rect x="8" y="225" width="135" height="48" rx="4" fill="rgba(255,255,255,0.92)"/>
-                            <circle cx="22" cy="238" r="6" fill="#1d6fb8"/>
-                            <text x="33" y="242" font-size="7" fill="#333" font-family="sans-serif">BOLÍVAR</text>
-                            <circle cx="22" cy="255" r="6" fill="#16a34a"/>
-                            <text x="33" y="259" font-size="7" fill="#333" font-family="sans-serif">VALLE DEL CAUCA</text>
-                        </svg>
-                    </div>
+                    <div id="mapa-ubicacion-leaflet" style="height:280px; border-radius:10px; z-index:1;"></div>
                 </div>
                 <div class="dash-card">
                     <h3>🍩 Suma por Estación</h3>
@@ -263,7 +204,6 @@
                 </div>
             </div>
 
-            <!-- KPI suma total -->
             <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr); margin-top:16px;">
                 <div class="kpi-card">
                     <div class="kpi-label">📊 Suma total promedio</div>
@@ -375,7 +315,6 @@
                 <p>Análisis detallado por año, trimestre, mes y estación</p>
             </div>
 
-            <!-- Filtros -->
             <div class="filter-bar">
                 <label>📅 Año:</label>
                 <select id="filtro-anio-detalle" onchange="filtrarDetalle()">
@@ -412,16 +351,16 @@
                         <canvas id="c-detalle-barras"></canvas>
                     </div>
                     <div class="chart-legend">
-                        <span><span class="legend-dot" style="background:#16a34a;"></span>Aumento</span>
-                        <span><span class="legend-dot" style="background:#dc2626;"></span>Disminución</span>
-                        <span><span class="legend-dot" style="background:#1d6fb8;"></span>Total</span>
+                        <span><span class="legend-dot" style="background:#16a34a;"></span>2019</span>
+                        <span><span class="legend-dot" style="background:#1d6fb8;"></span>2020</span>
+                        <span><span class="legend-dot" style="background:#7c3aed;"></span>Total</span>
                     </div>
                 </div>
             </div>
 
             <div class="dash-card" style="margin-top:16px;">
                 <h3>📋 Detalle por Año, Trimestre, Mes y Estación</h3>
-                <p class="card-sub">Suma de ValorObservado y Mediciones Críticas</p>
+                <p class="card-sub">Suma de ValorObservado y Total Mediciones</p>
                 <div class="table-wrap">
                     <table>
                         <thead>
@@ -489,6 +428,11 @@ function showPage(pageId, linkEl) {
     document.getElementById(pageId).style.display = 'block';
     linkEl.classList.add('active');
     document.getElementById('breadcrumb').textContent = pageTitles[pageId] || '';
+    // Forzar render de mapas al cambiar de página
+    setTimeout(() => {
+        if (mapaResumen)   mapaResumen.invalidateSize();
+        if (mapaUbicacion) mapaUbicacion.invalidateSize();
+    }, 200);
     return false;
 }
 
@@ -517,37 +461,125 @@ function mkChart(id, type, labels, datasets, extraOpts) {
     return charts[id];
 }
 
-/* ---- Tooltip mapa ---- */
-document.querySelectorAll('.map-station').forEach(dot => {
-    dot.style.cursor = 'pointer';
-    dot.addEventListener('mouseenter', function() {
-        const tip    = document.getElementById('map-tooltip-resumen');
-        if (!tip) return;
-        const mapBox = dot.closest('.map-container').getBoundingClientRect();
-        const dotBox = dot.getBoundingClientRect();
-        tip.innerHTML =
-            '<strong>' + this.dataset.nombre + '</strong><br>' +
-            'Depto: ' + this.dataset.depto + '<br>' +
-            'Lat: '   + this.dataset.lat   + ' · Lon: ' + this.dataset.lon;
-        tip.style.display = 'block';
-        tip.style.left = (dotBox.left - mapBox.left + 14) + 'px';
-        tip.style.top  = (dotBox.top  - mapBox.top  - 10) + 'px';
-    });
-    dot.addEventListener('mouseleave', function() {
-        const tip = document.getElementById('map-tooltip-resumen');
-        if (tip) tip.style.display = 'none';
-    });
-});
-
-/* ---- Variables globales de datos ---- */
-let datosResumen    = null;
-let datosTiempo     = null;
-let datosUbicacion  = null;
+/* ---- Variables globales ---- */
+let datosResumen      = null;
+let datosTiempo       = null;
+let datosUbicacion    = null;
 let datosDispositivos = null;
-let datosDetalle    = null;
+let datosDetalle      = null;
+let mapaResumen       = null;
+let mapaUbicacion     = null;
+
+/* ---- Estaciones reales desde BD ---- */
+const ESTACIONES_GEO = [
+    {
+        nombre:  "TESORO INVEMAR",
+        depto:   "BOLÍVAR",
+        lat:     10.235,
+        lon:     -75.741,
+        color:   "#1d6fb8"
+    },
+    {
+        nombre:  "JUANCHACO - AUT",
+        depto:   "VALLE DEL CAUCA",
+        lat:     3.9251,
+        lon:     -77.3490,
+        color:   "#16a34a"
+    }
+];
+
+/* ==============================
+   INICIALIZAR MAPAS LEAFLET
+   ============================== */
+function initMapas() {
+
+    // ---- Mapa Resumen Ejecutivo ----
+    if (!mapaResumen && document.getElementById('mapa-resumen-leaflet')) {
+        mapaResumen = L.map('mapa-resumen-leaflet', {
+            center: [7.0, -75.5],
+            zoom:   5
+        });
+
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri',
+            maxZoom: 18
+        }).addTo(mapaResumen);
+
+        ESTACIONES_GEO.forEach(est => {
+            const marker = L.circleMarker([est.lat, est.lon], {
+                radius:      12,
+                fillColor:   est.color,
+                color:       'white',
+                weight:      2.5,
+                opacity:     1,
+                fillOpacity: 0.9
+            }).addTo(mapaResumen);
+
+            marker.bindPopup(`
+                <div style="font-family:'Segoe UI',sans-serif; min-width:160px;">
+                    <strong style="color:#003d7a; font-size:13px;">${est.nombre}</strong><br>
+                    <span style="color:#4a6fa5; font-size:11px;">📍 ${est.depto}</span><br>
+                    <span style="font-size:11px;">Lat: ${est.lat} · Lon: ${est.lon}</span>
+                </div>
+            `);
+
+            marker.bindTooltip(est.nombre, {
+                permanent:  true,
+                direction:  'top',
+                className:  'leaflet-label'
+            });
+        });
+    }
+
+    // ---- Mapa Análisis por Ubicación ----
+    if (!mapaUbicacion && document.getElementById('mapa-ubicacion-leaflet')) {
+        mapaUbicacion = L.map('mapa-ubicacion-leaflet', {
+            center: [7.0, -75.5],
+            zoom:   5
+        });
+
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri',
+            maxZoom: 18
+        }).addTo(mapaUbicacion);
+
+        ESTACIONES_GEO.forEach(est => {
+            const marker = L.circleMarker([est.lat, est.lon], {
+                radius:      14,
+                fillColor:   est.color,
+                color:       'white',
+                weight:      2.5,
+                opacity:     1,
+                fillOpacity: 0.9
+            }).addTo(mapaUbicacion);
+
+            marker.bindPopup(`
+                <div style="font-family:'Segoe UI',sans-serif; min-width:160px;">
+                    <strong style="color:#003d7a; font-size:13px;">${est.nombre}</strong><br>
+                    <span style="color:#4a6fa5; font-size:11px;">📍 ${est.depto}</span><br>
+                    <span style="font-size:11px;">Lat: ${est.lat} · Lon: ${est.lon}</span>
+                </div>
+            `);
+
+            marker.bindTooltip(est.nombre, {
+                permanent:  true,
+                direction:  'top',
+                className:  'leaflet-label'
+            });
+        });
+    }
+
+    setTimeout(() => {
+        if (mapaResumen)   mapaResumen.invalidateSize();
+        if (mapaUbicacion) mapaUbicacion.invalidateSize();
+    }, 300);
+}
 
 /* ---- Cargar todos los datos ---- */
 window.addEventListener('load', async function() {
+
+    // Inicializar mapas
+    setTimeout(initMapas, 400);
 
     /* === RESUMEN EJECUTIVO === */
     try {
@@ -591,31 +623,31 @@ window.addEventListener('load', async function() {
    RENDER RESUMEN EJECUTIVO
    ============================== */
 function renderResumen(data) {
-    document.getElementById('kpi-promedio').textContent  = data.promedio.toFixed(2);
-    document.getElementById('kpi-maximo').textContent    = data.valor_max.toFixed(2);
-    document.getElementById('kpi-total').textContent     = (data.total_mediciones / 1000).toFixed(1) + ' mil';
-    document.getElementById('kpi-criticas').textContent  = data.mediciones_criticas;
+    document.getElementById('kpi-promedio').textContent = data.promedio.toFixed(2);
+    document.getElementById('kpi-maximo').textContent   = data.valor_max.toFixed(2);
+    document.getElementById('kpi-total').textContent    = (data.total_mediciones / 1000).toFixed(1) + ' mil';
+    document.getElementById('kpi-criticas').textContent = data.mediciones_criticas;
 
     const narrativa = document.getElementById('narrativa-resumen');
     if (narrativa) {
-        narrativa.innerHTML = `El sistema registra <strong>${(data.total_mediciones).toLocaleString()} mediciones</strong> 
-        con un nivel promedio de <strong>${data.promedio.toFixed(2)} m</strong> y un pico máximo de 
-        <strong>${data.valor_max.toFixed(2)} m</strong>. Se detectaron <strong>${data.mediciones_criticas}</strong> 
-        mediciones críticas (mayores a 5m).`;
+        narrativa.innerHTML = `El sistema registra <strong>${data.total_mediciones.toLocaleString()} mediciones</strong>
+        con un nivel promedio de <strong>${data.promedio.toFixed(2)} m</strong> y un pico máximo de
+        <strong>${data.valor_max.toFixed(2)} m</strong>. Se detectaron <strong>${data.mediciones_criticas}</strong>
+        mediciones críticas mayores a 5m.`;
     }
 
     const labels = data.suma_por_anio.map(d => d.anio);
     const vals   = data.suma_por_anio.map(d => d.valor);
 
     mkChart('c-resumen-linea', 'line', labels, [{
-        data: vals,
-        borderColor: '#1d6fb8',
-        backgroundColor: 'rgba(29,111,184,0.1)',
-        borderWidth: 3,
-        pointRadius: 6,
-        pointBackgroundColor: '#1d6fb8',
-        tension: 0.3,
-        fill: true
+        data:                vals,
+        borderColor:         '#1d6fb8',
+        backgroundColor:     'rgba(29,111,184,0.1)',
+        borderWidth:         3,
+        pointRadius:         6,
+        pointBackgroundColor:'#1d6fb8',
+        tension:             0.3,
+        fill:                true
     }]);
 }
 
@@ -623,16 +655,16 @@ function filtrarResumen() {
     if (!datosResumen) return;
     const anio = document.getElementById('filtro-anio-resumen').value;
     let data = datosResumen.suma_por_anio;
-    if (anio !== 'all') {
-        data = data.filter(d => d.anio === anio);
-    }
+    if (anio !== 'all') data = data.filter(d => d.anio === anio);
     mkChart('c-resumen-linea', 'line', data.map(d => d.anio), [{
-        data: data.map(d => d.valor),
-        borderColor: '#1d6fb8',
-        backgroundColor: 'rgba(29,111,184,0.1)',
-        borderWidth: 3, pointRadius: 6,
-        pointBackgroundColor: '#1d6fb8',
-        tension: 0.3, fill: true
+        data:                data.map(d => d.valor),
+        borderColor:         '#1d6fb8',
+        backgroundColor:     'rgba(29,111,184,0.1)',
+        borderWidth:         3,
+        pointRadius:         6,
+        pointBackgroundColor:'#1d6fb8',
+        tension:             0.3,
+        fill:                true
     }]);
 }
 
@@ -646,7 +678,7 @@ function renderTiempo(data) {
 
     const datasetsBarras = deptos.map((depto, i) => ({
         label: depto,
-        data: anios.map(anio => {
+        data:  anios.map(anio => {
             const row = data.por_anio_depto.find(d => d.anio === anio && d.departamento === depto);
             return row ? row.total : 0;
         }),
@@ -657,25 +689,31 @@ function renderTiempo(data) {
         plugins: { legend: { display: true, position: 'top' } }
     });
 
-    // Líneas por mes y año
     const aniosU = [...new Set(data.por_mes.map(d => d.anio))];
     const meses  = [...new Set(data.por_mes.map(d => d.mes))].sort((a,b) => a-b);
-    const nombMes = data.por_mes.filter(d => d.anio === aniosU[0]).sort((a,b) => a.mes - b.mes).map(d => d.nombre_mes.substring(0,3));
+    const nombMes = data.por_mes
+        .filter(d => d.anio === aniosU[0])
+        .sort((a,b) => a.mes - b.mes)
+        .map(d => d.nombre_mes.substring(0, 3));
 
     const datasetsLineas = aniosU.map((anio, i) => ({
-        label: String(anio),
-        data: meses.map(mes => {
+        label:           String(anio),
+        data:            meses.map(mes => {
             const row = data.por_mes.find(d => d.anio === anio && d.mes === mes);
             return row ? row.total : 0;
         }),
-        borderColor: COLORS[i],
+        borderColor:     COLORS[i],
         backgroundColor: 'transparent',
-        borderWidth: 2, pointRadius: 4, tension: 0.4
+        borderWidth:     2,
+        pointRadius:     4,
+        tension:         0.4
     }));
 
-    mkChart('c-tiempo-lineas', 'line', nombMes.length ? nombMes : meses.map(String), datasetsLineas, {
-        plugins: { legend: { display: true, position: 'top' } }
-    });
+    mkChart('c-tiempo-lineas', 'line',
+        nombMes.length ? nombMes : meses.map(String),
+        datasetsLineas,
+        { plugins: { legend: { display: true, position: 'top' } } }
+    );
 }
 
 function filtrarTiempo() {
@@ -700,20 +738,23 @@ function renderUbicacion(data) {
     const mins   = data.map(d => d.minimo);
 
     mkChart('c-ubicacion-donut', 'doughnut', labels, [{
-        data: sumas,
+        data:            sumas,
         backgroundColor: COLORS.slice(0, labels.length),
-        borderWidth: 3, borderColor: '#fff'
-    }], { scales: undefined, plugins: { legend: { display: true, position: 'bottom' } } });
+        borderWidth:     3,
+        borderColor:     '#fff'
+    }], {
+        scales:  undefined,
+        plugins: { legend: { display: true, position: 'bottom' } }
+    });
 
     const legD = document.getElementById('legend-ubicacion-donut');
     if (legD) legD.innerHTML = labels.map((l,i) =>
         `<span><span class="legend-dot" style="background:${COLORS[i]};"></span>${l}</span>`
     ).join('');
 
-    // KPIs
-    const sumaTotal  = data.reduce((a,d) => a + d.suma, 0);
-    const maxGlobal  = Math.max(...maxs);
-    const minGlobal  = Math.min(...mins);
+    const sumaTotal = data.reduce((a,d) => a + d.suma, 0);
+    const maxGlobal = Math.max(...maxs);
+    const minGlobal = Math.min(...mins);
 
     const elSuma = document.getElementById('kpi-suma-total');
     const elMax  = document.getElementById('kpi-max-global');
@@ -722,7 +763,6 @@ function renderUbicacion(data) {
     if (elMax)  elMax.textContent  = maxGlobal.toFixed(2) + ' m';
     if (elMin)  elMin.textContent  = minGlobal.toFixed(2) + ' m';
 
-    // Tabla
     const tbody = document.getElementById('tabla-ubicacion');
     if (tbody) {
         tbody.innerHTML = data.map(d => `
@@ -740,10 +780,10 @@ function renderUbicacion(data) {
 
 function filtrarUbicacion() {
     if (!datosUbicacion) return;
-    const depto   = document.getElementById('filtro-depto').value;
+    const depto    = document.getElementById('filtro-depto').value;
     const estacion = document.getElementById('filtro-estacion-ubi').value;
     let data = datosUbicacion;
-    if (depto !== 'all')    data = data.filter(d => d.departamento === depto);
+    if (depto    !== 'all') data = data.filter(d => d.departamento === depto);
     if (estacion !== 'all') data = data.filter(d => d.estacion === estacion);
     renderUbicacion(data);
 }
@@ -753,9 +793,9 @@ function filtrarUbicacion() {
    RENDER DISPOSITIVOS
    ============================== */
 function renderDispositivos(data) {
-    const labels   = data.map(d => d.estacion);
-    const medics   = data.map(d => d.mediciones);
-    const sumas    = data.map(d => d.suma);
+    const labels  = data.map(d => d.estacion);
+    const medics  = data.map(d => d.mediciones);
+    const sumas   = data.map(d => d.suma);
     const totalGen = sumas.reduce((a,b) => a+b, 0);
 
     const elTotal = document.getElementById('kpi-disp-total');
@@ -764,15 +804,18 @@ function renderDispositivos(data) {
     if (elEst)   elEst.textContent   = data.length;
 
     mkChart('c-disp-barras', 'bar', labels, [{
-        data: medics,
+        data:            medics,
         backgroundColor: COLORS.slice(0, labels.length)
     }], { indexAxis: 'y' });
 
     mkChart('c-disp-pie', 'pie', labels, [{
-        data: medics,
+        data:            medics,
         backgroundColor: COLORS.slice(0, labels.length),
-        borderWidth: 2
-    }], { scales: undefined, plugins: { legend: { display: true, position: 'bottom' } } });
+        borderWidth:     2
+    }], {
+        scales:  undefined,
+        plugins: { legend: { display: true, position: 'bottom' } }
+    });
 
     const tbody = document.getElementById('tabla-dispositivos');
     if (tbody) {
@@ -810,31 +853,27 @@ function renderDetalle(data) {
     const elGauge = document.getElementById('gauge-valor');
     if (elGauge) elGauge.textContent = (data.total_mediciones / 1000).toFixed(2);
 
-    // Gauge como doughnut
-    const porcentaje = Math.min((data.total_mediciones / data.total_mediciones) * 100, 100);
     mkChart('c-detalle-gauge', 'doughnut',
         ['Mediciones', 'Restante'],
         [{
-            data: [data.total_general, Math.max(0, (data.total_general * 2) - data.total_general)],
+            data:            [data.total_general, data.total_general],
             backgroundColor: ['#1d6fb8', '#e5e7eb'],
-            borderWidth: 0,
-            circumference: 180,
-            rotation: -90,
+            borderWidth:     0,
+            circumference:   180,
+            rotation:        -90,
         }],
         { scales: undefined, plugins: { legend: { display: false } } }
     );
 
-    // Barras por año
     const anios = data.por_anio;
     mkChart('c-detalle-barras', 'bar',
         [...anios.map(d => String(d.anio)), 'Total'],
         [{
-            data: [...anios.map(d => d.mediciones), data.total_mediciones],
-            backgroundColor: [...anios.map((d, i) => i === 0 ? '#16a34a' : '#1d6fb8'), '#7c3aed']
+            data:            [...anios.map(d => d.mediciones), data.total_mediciones],
+            backgroundColor: [...anios.map((_, i) => i === 0 ? '#16a34a' : '#1d6fb8'), '#7c3aed']
         }]
     );
 
-    // Tabla
     renderTablaDetalle(data.detalle);
 }
 
@@ -845,7 +884,7 @@ function renderTablaDetalle(detalle) {
         <tr>
             <td>${d.anio}</td>
             <td>Trim. ${d.trimestre}</td>
-            <td>${d.mes}</td>
+            <td>${d.nombre_mes || d.mes}</td>
             <td><strong>${d.estacion}</strong></td>
             <td>${d.suma.toLocaleString()}</td>
             <td>${d.mediciones.toLocaleString()}</td>
@@ -858,7 +897,7 @@ function filtrarDetalle() {
     const anio      = document.getElementById('filtro-anio-detalle').value;
     const trimestre = document.getElementById('filtro-trimestre').value;
     let detalle = datosDetalle.detalle;
-    if (anio !== 'all')      detalle = detalle.filter(d => String(d.anio) === anio);
+    if (anio      !== 'all') detalle = detalle.filter(d => String(d.anio)      === anio);
     if (trimestre !== 'all') detalle = detalle.filter(d => String(d.trimestre) === trimestre);
     renderTablaDetalle(detalle);
 }

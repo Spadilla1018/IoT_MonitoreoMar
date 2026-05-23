@@ -580,7 +580,7 @@ def get_detalle_mediciones():
     conn = get_connection()
     cursor = conn.cursor()
 
-    # Total por año para gráfica cascada
+    # Total por año
     cursor.execute("""
         SELECT
             t.Anio,
@@ -596,11 +596,12 @@ def get_detalle_mediciones():
         for r in cursor.fetchall()
     ]
 
-    # Tabla detalle por trimestre, mes y estación
+    # Tabla detalle
     cursor.execute("""
         SELECT TOP 50
             t.Anio,
             t.Trimestre,
+            t.Mes,
             t.NombreMes,
             e.NombreEstacion,
             ROUND(SUM(f.ValorObservado), 2) AS SumaValor,
@@ -608,17 +609,18 @@ def get_detalle_mediciones():
         FROM Fact_NivelMar f
         JOIN Dim_Tiempo   t ON f.ID_Tiempo   = t.ID_Tiempo
         JOIN Dim_Estacion e ON f.ID_Estacion = e.ID_Estacion
-        GROUP BY t.Anio, t.Trimestre, t.NombreMes, e.NombreEstacion
+        GROUP BY t.Anio, t.Trimestre, t.Mes, t.NombreMes, e.NombreEstacion
         ORDER BY t.Anio, t.Trimestre, t.Mes
     """)
     detalle = [
         {
-            "anio":      r[0],
-            "trimestre": r[1],
-            "mes":       r[2],
-            "estacion":  r[3],
-            "suma":      float(r[4]),
-            "mediciones": r[5],
+            "anio":       r[0],
+            "trimestre":  r[1],
+            "mes":        r[2],
+            "nombre_mes": r[3],
+            "estacion":   r[4],
+            "suma":       float(r[5]),
+            "mediciones": r[6],
         }
         for r in cursor.fetchall()
     ]
@@ -631,13 +633,13 @@ def get_detalle_mediciones():
         FROM Fact_NivelMar
     """)
     row = cursor.fetchone()
-    total_general = float(row[0]) if row[0] else 0
+    total_general    = float(row[0]) if row[0] else 0
     total_mediciones = row[1]
 
     conn.close()
     return {
-        "por_anio":        por_anio,
-        "detalle":         detalle,
-        "total_general":   total_general,
+        "por_anio":         por_anio,
+        "detalle":          detalle,
+        "total_general":    total_general,
         "total_mediciones": total_mediciones,
     }

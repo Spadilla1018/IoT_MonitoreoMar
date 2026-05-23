@@ -8,7 +8,12 @@ from db import (
     get_promedios_temporales,
     get_alertas,
     verificar_usuario,
-    registrar_usuario,      
+    registrar_usuario,
+    get_resumen_ejecutivo,
+    get_analisis_tiempo,
+    get_analisis_ubicacion,
+    get_dispositivos_sensores,
+    get_detalle_mediciones,
 )
 
 app = Flask(__name__)
@@ -233,3 +238,52 @@ def registro():
                                usuario=None,
                                error_registro=error_msg,
                                mostrar_registro=True)
+    
+    @app.route("/api/resumen-ejecutivo")
+def api_resumen_ejecutivo():
+    if "usuario" not in session:
+        return jsonify({"error": "No autorizado"}), 401
+    try:
+        return jsonify(get_resumen_ejecutivo())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/analisis-tiempo")
+def api_analisis_tiempo():
+    if "usuario" not in session:
+        return jsonify({"error": "No autorizado"}), 401
+    try:
+        return jsonify(get_analisis_tiempo())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/analisis-ubicacion")
+def api_analisis_ubicacion():
+    if "usuario" not in session:
+        return jsonify({"error": "No autorizado"}), 401
+    try:
+        return jsonify(get_analisis_ubicacion())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/dispositivos-sensores")
+def api_dispositivos_sensores():
+    if "usuario" not in session:
+        return jsonify({"error": "No autorizado"}), 401
+    try:
+        return jsonify(get_dispositivos_sensores())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/detalle-mediciones")
+def api_detalle_mediciones():
+    if "usuario" not in session:
+        return jsonify({"error": "No autorizado"}), 401
+    try:
+        return jsonify(get_detalle_mediciones())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

@@ -391,3 +391,253 @@ def registrar_usuario(nombre, apellido, email, password):
     except Exception as e:
         conn.close()
         return {"ok": False, "error": str(e)}
+    
+# =========================================
+#   RESUMEN EJECUTIVO
+# =========================================
+
+def get_resumen_ejecutivo():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Promedio nivel del mar
+    cursor.execute("""
+        SELECT ROUND(AVG(f.ValorObservado), 2)
+        FROM Fact_NivelMar f
+    """)
+    promedio = cursor.fetchone()[0]
+
+    # Valor máximo
+    cursor.execute("""
+        SELECT ROUND(MAX(f.ValorObservado), 2)
+        FROM Fact_NivelMar f
+    """)
+    valor_max = cursor.fetchone()[0]
+
+    # Total mediciones
+    cursor.execute("SELECT COUNT(*) FROM Fact_NivelMar")
+    total_mediciones = cursor.fetchone()[0]
+
+    # Mediciones críticas (> 5m = 5.0)
+    cursor.execute("""
+        SELECT COUNT(*) FROM Fact_NivelMar
+        WHERE ValorObservado > 5
+    """)
+    mediciones_criticas = cursor.fetchone()[0]
+
+    # Suma por año para gráfica de línea
+    cursor.execute("""
+        SELECT t.Anio, ROUND(SUM(f.ValorObservado), 2)
+        FROM Fact_NivelMar f
+        JOIN Dim_Tiempo t ON f.ID_Tiempo = t.ID_Tiempo
+        GROUP BY t.Anio
+        ORDER BY t.Anio
+    """)
+    suma_por_anio = [{"anio": str(r[0]), "valor": float(r[1])} for r in cursor.fetchall()]
+
+    conn.close()
+    return {
+        "promedio":           float(promedio) if promedio else 0,
+        "valor_max":          float(valor_max) if valor_max else 0,
+        "total_mediciones":   total_mediciones,
+        "mediciones_criticas": mediciones_criticas,
+        "suma_por_anio":      suma_por_anio,
+    }
+
+
+# =========================================
+#   ANÁLISIS POR TIEMPO
+# =========================================
+
+def get_analisis_tiempo():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Suma por año y departamento
+    cursor.execute("""
+        SELECT
+            t.Anio,
+            u.Departamento,
+            ROUND(SUM(f.ValorObservado), 2) AS Total
+        FROM Fact_NivelMar f
+        JOIN Dim_Tiempo    t ON f.ID_Tiempo    = t.ID_Tiempo
+        JOIN Dim_Ubicacion u ON f.ID_Ubicacion = u.ID_Ubicacion
+        GROUP BY t.Anio, u.Departamento
+        ORDER BY t.Anio, u.Departamento
+    """)
+    por_anio_depto = [
+        {"anio": r[0], "departamento": r[1], "total": float(r[2])}
+        for r in cursor.fetchall()
+    ]
+
+    # Suma por mes y año
+    cursor.execute("""
+        SELECT
+            t.Anio,
+            t.Mes,
+            t.NombreMes,
+            ROUND(SUM(f.ValorObservado), 2) AS Total
+        FROM Fact_NivelMar f
+        JOIN Dim_Tiempo t ON f.ID_Tiempo = t.ID_Tiempo
+        GROUP BY t.Anio, t.Mes, t.NombreMes
+        ORDER BY t.Anio, t.Mes
+    """)
+    por_mes = [
+        {"anio": r[0], "mes": r[1], "nombre_mes": r[2], "total": float(r[3])}
+        for r in cursor.fetchall()
+    ]
+
+    conn.close()
+    return {
+        "por_anio_depto": por_anio_depto,
+        "por_mes":        por_mes,
+    }
+
+
+# =========================================
+#   ANÁLISIS POR UBICACIÓN
+# =========================================
+
+def get_analisis_ubicacion():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Suma, máx y mín por estación
+    cursor.execute("""
+        SELECT
+            e.NombreEstacion,
+            u.Departamento,
+            u.Latitud,
+            u.Longitud,
+            ROUND(SUM(f.ValorObservado), 2)  AS SumaPromedio,
+            ROUND(MAX(f.ValorObservado), 2)  AS ValorMaximo,
+            ROUND(MIN(f.ValorObservado), 2)  AS ValorMinimo,
+            COUNT(*)                          AS TotalMediciones
+        FROM Fact_NivelMar f
+        JOIN Dim_Estacion  e ON f.ID_Estacion  = e.ID_Estacion
+        JOIN Dim_Ubicacion u ON f.ID_Ubicacion = u.ID_Ubicacion
+        GROUP BY e.NombreEstacion, u.Departamento, u.Latitud, u.Longitud
+        ORDER BY SumaPromedio DESC
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [
+        {
+            "estacion":    r[0],
+            "departamento": r[1],
+            "latitud":     float(r[2]) if r[2] else None,
+            "longitud":    float(r[3]) if r[3] else None,
+            "suma":        float(r[4]),
+            "maximo":      float(r[5]),
+            "minimo":      float(r[6]),
+            "mediciones":  r[7],
+        }
+        for r in rows
+    ]
+
+
+# =========================================
+#   DISPOSITIVOS Y SENSORES
+# =========================================
+
+def get_dispositivos_sensores():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            e.NombreEstacion,
+            ROUND(SUM(f.ValorObservado), 2)  AS SumaPromedio,
+            ROUND(MAX(f.ValorObservado), 2)  AS ValorMaximo,
+            ROUND(MIN(f.ValorObservado), 2)  AS ValorMinimo,
+            COUNT(*)                          AS TotalMediciones
+        FROM Fact_NivelMar f
+        JOIN Dim_Estacion e ON f.ID_Estacion = e.ID_Estacion
+        GROUP BY e.NombreEstacion
+        ORDER BY TotalMediciones DESC
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [
+        {
+            "estacion":   r[0],
+            "suma":       float(r[1]),
+            "maximo":     float(r[2]),
+            "minimo":     float(r[3]),
+            "mediciones": r[4],
+        }
+        for r in rows
+    ]
+
+
+# =========================================
+#   DETALLE MEDICIONES
+# =========================================
+
+def get_detalle_mediciones():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Total por año para gráfica cascada
+    cursor.execute("""
+        SELECT
+            t.Anio,
+            ROUND(SUM(f.ValorObservado), 2) AS Total,
+            COUNT(*) AS Mediciones
+        FROM Fact_NivelMar f
+        JOIN Dim_Tiempo t ON f.ID_Tiempo = t.ID_Tiempo
+        GROUP BY t.Anio
+        ORDER BY t.Anio
+    """)
+    por_anio = [
+        {"anio": r[0], "total": float(r[1]), "mediciones": r[2]}
+        for r in cursor.fetchall()
+    ]
+
+    # Tabla detalle por trimestre, mes y estación
+    cursor.execute("""
+        SELECT TOP 50
+            t.Anio,
+            t.Trimestre,
+            t.NombreMes,
+            e.NombreEstacion,
+            ROUND(SUM(f.ValorObservado), 2) AS SumaValor,
+            COUNT(*) AS TotalMediciones
+        FROM Fact_NivelMar f
+        JOIN Dim_Tiempo   t ON f.ID_Tiempo   = t.ID_Tiempo
+        JOIN Dim_Estacion e ON f.ID_Estacion = e.ID_Estacion
+        GROUP BY t.Anio, t.Trimestre, t.NombreMes, e.NombreEstacion
+        ORDER BY t.Anio, t.Trimestre, t.Mes
+    """)
+    detalle = [
+        {
+            "anio":      r[0],
+            "trimestre": r[1],
+            "mes":       r[2],
+            "estacion":  r[3],
+            "suma":      float(r[4]),
+            "mediciones": r[5],
+        }
+        for r in cursor.fetchall()
+    ]
+
+    # Total general
+    cursor.execute("""
+        SELECT
+            ROUND(SUM(ValorObservado), 2),
+            COUNT(*)
+        FROM Fact_NivelMar
+    """)
+    row = cursor.fetchone()
+    total_general = float(row[0]) if row[0] else 0
+    total_mediciones = row[1]
+
+    conn.close()
+    return {
+        "por_anio":        por_anio,
+        "detalle":         detalle,
+        "total_general":   total_general,
+        "total_mediciones": total_mediciones,
+    }
